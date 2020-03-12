@@ -37,21 +37,13 @@ public class Warehouse extends Node {
 	public void buildConnection() {
 		try {
 			// Important line so we can use SQL connection
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName(Constants.DB_DRIVER);
 
 			// Connect to the database
-			final String DB_NAME = "tim_403_2_si2019";
-			final String DB_USERNAME = "tim_403_2_si2019";
-			final String DB_PASSWORD = "QJfcAmGb";
-			final String DB_HOST = "64.225.110.65";
-			final String DB_PORT = "3306";
-			// URL: jdbc:mysql://tim_403_2_si2019:QJfcAmGb@64.225.110.65:3306/tim_403_2_si2019
-			final String DB_URL = "jdbc:mysql://" + DB_USERNAME + ":" + DB_PASSWORD + "@" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
-
-			dbConnection = DriverManager.getConnection(DB_URL);
+			dbConnection = DriverManager.getConnection(Constants.DB_URL);
 
 			if (dbConnection == null) {
-				throw new Exception("Couldn't establish a connection: " + DB_NAME + " at host " + DB_HOST);
+				throw new Exception("Couldn't establish a connection: " + Constants.DB_NAME + " at host " + Constants.DB_HOST);
 			}
 
 			DatabaseMetaData metaData = dbConnection.getMetaData();

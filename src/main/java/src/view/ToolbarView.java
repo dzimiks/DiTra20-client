@@ -33,7 +33,7 @@ public class ToolbarView extends JToolBar {
 				}
 
 				Warehouse.getInstance().loadWarehouse(metaschemaString.toString());
-				treeView.refresh();
+				this.treeView.refresh();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

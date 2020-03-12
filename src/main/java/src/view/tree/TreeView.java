@@ -22,7 +22,7 @@ public class TreeView extends JPanel {
 
 	private void init() {
 		this.root = Warehouse.getInstance();
-		this.setPreferredSize(new Dimension(250, Constants.SCREEN_SIZE_HEIGHT));
+		this.setPreferredSize(new Dimension(Constants.SCROLL_PANE_WIDTH, Constants.SCREEN_SIZE_HEIGHT));
 
 		this.treeModel = new DefaultTreeModel(root);
 		this.treeModel.setRoot(root);
@@ -39,14 +39,13 @@ public class TreeView extends JPanel {
 		this.tree.setSelectionModel(selectionModel);
 
 		this.setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(1000, 1000));
+		this.setMinimumSize(new Dimension(Constants.SCREEN_SIZE_WIDTH, Constants.SCREEN_SIZE_HEIGHT));
 
-		int height = 1000;
 		JScrollPane treeScrollPane = new JScrollPane(tree);
-		treeScrollPane.setSize(new Dimension(50, height));
-		treeScrollPane.setMaximumSize(new Dimension(50, height));
-		treeScrollPane.setMinimumSize(new Dimension(50, height));
-		treeScrollPane.setPreferredSize(new Dimension(50, height));
+		treeScrollPane.setSize(new Dimension(Constants.TREE_SCROLL_PANE_WIDTH, Constants.TREE_SCROLL_PANE_HEIGHT));
+		treeScrollPane.setMaximumSize(new Dimension(Constants.TREE_SCROLL_PANE_WIDTH, Constants.TREE_SCROLL_PANE_HEIGHT));
+		treeScrollPane.setMinimumSize(new Dimension(Constants.TREE_SCROLL_PANE_WIDTH, Constants.TREE_SCROLL_PANE_HEIGHT));
+		treeScrollPane.setPreferredSize(new Dimension(Constants.TREE_SCROLL_PANE_WIDTH, Constants.TREE_SCROLL_PANE_HEIGHT));
 		treeScrollPane.setAutoscrolls(true);
 
 		this.add(treeScrollPane, BorderLayout.NORTH);

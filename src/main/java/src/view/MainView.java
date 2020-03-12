@@ -38,9 +38,10 @@ public class MainView extends JFrame {
 		this.add(toolbarView, BorderLayout.PAGE_START);
 
 		JScrollPane scrollPane = new JScrollPane(treeView);
-		scrollPane.setMinimumSize(new Dimension(250, 600));
+		scrollPane.setMinimumSize(new Dimension(Constants.SCROLL_PANE_WIDTH, Constants.SCROLL_PANE_HEIGHT));
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+		// TODO: Add DesktopView
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, new JPanel());
 		splitPane.setDividerLocation(300);
 

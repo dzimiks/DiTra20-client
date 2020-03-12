@@ -1,6 +1,9 @@
 package src.view.tree;
 
 import src.constants.Constants;
+import src.models.Attribute;
+import src.models.Entity;
+import src.models.InformationResource;
 import src.models.Warehouse;
 
 import javax.swing.*;
@@ -25,14 +28,13 @@ public class TreeCellRendered extends DefaultTreeCellRenderer {
 
 		if (value instanceof Warehouse) {
 			iconPath = Constants.WAREHOUSE_ICON;
+		} else if (value instanceof InformationResource) {
+			iconPath = Constants.INFORMATION_RESOURCE_ICON;
+		} else if (value instanceof Entity) {
+			iconPath = Constants.ENTITY_ICON;
+		} else if (value instanceof Attribute) {
+			iconPath = Constants.ATTRIBUTE_ICON;
 		}
-//		else if (value instanceof InformationResource) {
-//			iconPath = "/treeImages/information-resource.png";
-//		} else if (value instanceof Entity) {
-//			iconPath = "/treeImages/entity.png";
-//		} else if (value instanceof Attribute) {
-//			iconPath = "/treeImages/attribute.png";
-//		}
 
 		try {
 			if (iconPath != null) {
@@ -44,7 +46,6 @@ public class TreeCellRendered extends DefaultTreeCellRenderer {
 		}
 
 		this.setText(value.toString());
-
 		return this;
 	}
 }
