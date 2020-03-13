@@ -1,8 +1,8 @@
 package src.models;
 
 import src.constants.Constants;
-import src.metaschema.Deserializer;
 import src.models.tree.Node;
+import src.models.tree.NodeFactory;
 
 import java.sql.*;
 
@@ -22,8 +22,23 @@ public class Warehouse extends Node {
 
 	public void loadWarehouse(String metaschemaString) throws Exception {
 		this.metaschemaString = metaschemaString;
-		Deserializer deserializer = new Deserializer(metaschemaString, this);
-		deserializer.deserialize(metaschemaString, this);
+		buildConnection();
+	}
+
+	private void printForeignKeys(Connection connection, String tableName) throws SQLException {
+		DatabaseMetaData metaData = connection.getMetaData();
+		ResultSet foreignKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
+
+		while (foreignKeys.next()) {
+			// Relation From
+			String fkTableName = foreignKeys.getString("FKTABLE_NAME");
+			String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
+
+			// Relation To
+			String pkTableName = foreignKeys.getString("PKTABLE_NAME");
+			String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
+			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
+		}
 	}
 
 	public static Warehouse getInstance() {
@@ -51,25 +66,48 @@ public class Warehouse extends Node {
 			ResultSet allTables = metaData.getTables(null, null, null, dbTypes);
 			int tablesCount = 0;
 
-			// Print all columns from all system and user defined tables
+			// Print all tables from all system and user defined tables
 			// ResultSet resultSet = metaData.getTables(null, null, "%", null);
 
 			while (allTables.next()) {
-				System.out.println(allTables.getString("TABLE_NAME"));
+				String tableName = allTables.getString("TABLE_NAME");
+				ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
+				Node resource = NodeFactory.getInstance().getNode("Information Resource", tableName);
+
+				// Get all relations between tables
+				printForeignKeys(dbConnection, tableName);
+				System.out.println("Table: " + tableName);
+
+				while (allColumns.next()) {
+					String columnName = allColumns.getString("COLUMN_NAME");
+					resource.addChild(new Entity(columnName));
+
+
+					// TODO: Get attributes
+//					ResultSet allAttributes = metaData.getAttributes(null, null, "%", null);
+//					System.out.println("> Column: " + columnName);
+//
+//					while (allAttributes.next()) {
+//						String attributeName = allAttributes.getString("ATTR_NAME");
+//						System.out.println(">> Attribute: " + attributeName);
+//					}
+				}
+
+				Warehouse.getInstance().addChild(resource);
 				tablesCount++;
 			}
 
 			System.out.println("\nFound " + tablesCount + " tables\n");
 
-//			ResultSet allColumns = metaData.getColumns(null, null, "ROLE", null);
-//			int columnCount = 0;
-//
-//			while (allColumns.next()) {
-//				System.out.println(allColumns.getString("COLUMN_NAME"));
-//				columnCount++;
-//			}
-//
-//			System.out.println("\nFound " + columnCount + " columns\n");
+			ResultSet allColumns = metaData.getColumns(null, null, Constants.DB_NAME, null);
+			int columnCount = 0;
+
+			while (allColumns.next()) {
+				System.out.println(allColumns.getString("COLUMN_NAME"));
+				columnCount++;
+			}
+
+			System.out.println("\nFound " + columnCount + " columns\n");
 			dbConnection.close();
 		} catch (Exception e) {
 			e.printStackTrace();

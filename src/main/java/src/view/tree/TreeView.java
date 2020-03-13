@@ -1,6 +1,7 @@
 package src.view.tree;
 
 import src.constants.Constants;
+import src.controllers.TreeController;
 import src.models.Warehouse;
 import src.models.tree.Node;
 
@@ -15,9 +16,11 @@ public class TreeView extends JPanel {
 	private Node root;
 	private MainTree tree;
 	private DefaultTreeModel treeModel;
+	private TreeController treeController;
 
 	public TreeView() {
 		init();
+		this.treeController = new TreeController(this);
 	}
 
 	private void init() {
@@ -30,8 +33,8 @@ public class TreeView extends JPanel {
 		this.tree = new MainTree();
 		this.tree.setModel(treeModel);
 
-		TreeCellRendered tcr = new TreeCellRendered();
-		this.tree.setCellRenderer(tcr);
+		TreeCellRendered cellRendered = new TreeCellRendered();
+		this.tree.setCellRenderer(cellRendered);
 		this.tree.setShowsRootHandles(true);
 
 		TreeSelectionModel selectionModel = new DefaultTreeSelectionModel();
@@ -57,6 +60,10 @@ public class TreeView extends JPanel {
 
 	public MainTree getTree() {
 		return tree;
+	}
+
+	public TreeController getTreeController() {
+		return treeController;
 	}
 
 	public Node getSelectedNode() {
