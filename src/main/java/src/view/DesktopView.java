@@ -1,6 +1,9 @@
 package src.view;
 
+import src.controllers.DesktopController;
 import src.controllers.TreeController;
+import src.view.table.TabbedView;
+import src.view.table.TableToolbarView;
 import src.view.tree.TreeView;
 
 import javax.swing.*;
@@ -10,7 +13,10 @@ public class DesktopView extends JPanel {
 
 	private TreeView treeView;
 	private TabbedView tabbedView;
+	private TableToolbarView tableToolbarView;
+
 	private TreeController treeController;
+	private DesktopController desktopController;
 
 	private JSplitPane splitPane;
 	private JSplitPane indexSplit;
@@ -22,7 +28,10 @@ public class DesktopView extends JPanel {
 
 		this.treeView = treeView;
 		this.tabbedView = new TabbedView();
-		this.treeController = new TreeController(treeView);
+		this.tableToolbarView = new TableToolbarView(null);
+
+		this.treeController = new TreeController(treeView, tabbedView);
+		this.desktopController = new DesktopController(tabbedView);
 
 		this.mainPanel = new JPanel();
 		this.mainPanel.setLayout(new BorderLayout());
@@ -36,7 +45,39 @@ public class DesktopView extends JPanel {
 		this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, indexSplit, mainPanel);
 		this.splitPane.setDividerLocation(350);
 
-//		this.add(tableToolbarView, BorderLayout.NORTH);
+		this.add(tableToolbarView, BorderLayout.NORTH);
 		this.add(splitPane, BorderLayout.CENTER);
+	}
+
+	public TreeView getTreeView() {
+		return treeView;
+	}
+
+	public TabbedView getTabbedView() {
+		return tabbedView;
+	}
+
+	public TreeController getTreeController() {
+		return treeController;
+	}
+
+	public DesktopController getDesktopController() {
+		return desktopController;
+	}
+
+	public JSplitPane getSplitPane() {
+		return splitPane;
+	}
+
+	public JSplitPane getIndexSplit() {
+		return indexSplit;
+	}
+
+	public JPanel getIndexPanel() {
+		return indexPanel;
+	}
+
+	public JPanel getMainPanel() {
+		return mainPanel;
 	}
 }

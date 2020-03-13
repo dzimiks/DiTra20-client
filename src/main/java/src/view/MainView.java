@@ -80,4 +80,8 @@ public class MainView extends JFrame {
 	public TreeView getTreeView() {
 		return treeView;
 	}
+
+	public DesktopView getDesktopView() {
+		return desktopView;
+	}
 }

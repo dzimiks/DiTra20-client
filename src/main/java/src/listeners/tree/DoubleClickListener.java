@@ -1,6 +1,7 @@
 package src.listeners.tree;
 
 import src.models.Entity;
+import src.view.table.TabbedView;
 import src.view.tree.TreeView;
 
 import javax.swing.event.TreeSelectionEvent;
@@ -9,9 +10,11 @@ import javax.swing.event.TreeSelectionListener;
 public class DoubleClickListener implements TreeSelectionListener {
 
 	private TreeView treeView;
+	private TabbedView tabbedView;
 
-	public DoubleClickListener(TreeView treeView) {
+	public DoubleClickListener(TreeView treeView, TabbedView tabbedView) {
 		this.treeView = treeView;
+		this.tabbedView = tabbedView;
 	}
 
 	@Override
@@ -23,7 +26,10 @@ public class DoubleClickListener implements TreeSelectionListener {
 		}
 
 		if (node instanceof Entity) {
-			System.out.println("Clicked on " + node);
+			Entity entity = (Entity) node;
+
+			tabbedView.addNewTab(entity);
+			System.out.println("Clicked on " + entity);
 		}
 	}
 }

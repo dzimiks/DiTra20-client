@@ -34,6 +34,7 @@ public class Constants {
 	public static final String RELATIONS_ICON = RESOURCES_PATH + "/images/toolbar/relations.png";
 	public static final String SUBMIT_ICON = RESOURCES_PATH + "/images/toolbar/submit.png";
 	public static final String UPDATE_ICON = RESOURCES_PATH + "/images/toolbar/update.png";
+	public static final String FETCH_ICON = RESOURCES_PATH + "/images/toolbar/fetch.png";
 
 	/**
 	 * Tree icons
