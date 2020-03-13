@@ -117,7 +117,7 @@ public class Warehouse extends Node {
 			DatabaseMetaData metaData = dbConnection.getMetaData();
 			generateTree(metaData);
 			// TODO: Don't close connection!
-//			dbConnection.close();
+			// dbConnection.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
