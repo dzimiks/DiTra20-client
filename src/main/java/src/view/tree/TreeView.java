@@ -16,11 +16,9 @@ public class TreeView extends JPanel {
 	private Node root;
 	private MainTree tree;
 	private DefaultTreeModel treeModel;
-	private TreeController treeController;
 
 	public TreeView() {
 		init();
-		this.treeController = new TreeController(this);
 	}
 
 	private void init() {
@@ -60,10 +58,6 @@ public class TreeView extends JPanel {
 
 	public MainTree getTree() {
 		return tree;
-	}
-
-	public TreeController getTreeController() {
-		return treeController;
 	}
 
 	public Node getSelectedNode() {

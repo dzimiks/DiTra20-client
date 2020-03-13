@@ -15,6 +15,7 @@ public class MainView extends JFrame {
 
 	private ToolbarView toolbarView;
 	private TreeView treeView;
+	private DesktopView desktopView;
 
 	private MainView() {
 		init();
@@ -35,16 +36,16 @@ public class MainView extends JFrame {
 		// Initialize view
 		this.treeView = new TreeView();
 		this.toolbarView = new ToolbarView(treeView);
-		this.add(toolbarView, BorderLayout.PAGE_START);
+		this.desktopView = new DesktopView(treeView);
 
 		JScrollPane scrollPane = new JScrollPane(treeView);
 		scrollPane.setMinimumSize(new Dimension(Constants.SCROLL_PANE_WIDTH, Constants.SCROLL_PANE_HEIGHT));
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-		// TODO: Add DesktopView
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, new JPanel());
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, desktopView);
 		splitPane.setDividerLocation(300);
 
+		this.add(toolbarView, BorderLayout.PAGE_START);
 		this.add(splitPane, BorderLayout.CENTER);
 	}
 
