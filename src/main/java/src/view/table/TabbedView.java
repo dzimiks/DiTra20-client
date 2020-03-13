@@ -4,6 +4,7 @@ import src.models.Entity;
 import src.view.table.TablePanel;
 
 import javax.swing.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,10 +1,17 @@
 package src.view.table;
 
+import src.models.Attribute;
 import src.models.Entity;
+import src.models.Warehouse;
+import src.models.tree.Node;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class TablePanel extends JPanel {
 
@@ -33,6 +40,44 @@ public class TablePanel extends JPanel {
 		table.setFillsViewportHeight(true);
 		scrollPane = new JScrollPane(table);
 		this.add(scrollPane);
+	}
+
+	public void fetchData() throws SQLException {
+		System.out.println("Fetching DB data...");
+
+		while (tableModel.getRowCount() != 0) {
+			tableModel.removeRow(0);
+		}
+
+		String query = "SELECT * FROM " + entity.getName();
+
+		System.out.println("\n==========");
+		System.out.println(query);
+		System.out.println("==========\n");
+
+		PreparedStatement statement = Warehouse.getInstance().getDbConnection().prepareStatement(query);
+		ResultSet resultSet = statement.executeQuery();
+
+		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
+			System.err.println("Database and MS out of sync.");
+			return;
+		}
+
+		ArrayList<Object> rows = new ArrayList<>();
+
+		while (resultSet.next()) {
+			for (Node node : entity.getChildren()) {
+				if (node instanceof Attribute) {
+					Object value = resultSet.getObject(node.getName());
+					rows.add(value);
+				}
+			}
+		}
+
+		System.out.println("DATA: " + rows);
+		tableModel.addRow(rows.toArray());
+		resultSet.close();
+		statement.close();
 	}
 
 	public Entity getEntity() {

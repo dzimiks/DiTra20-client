@@ -5,6 +5,8 @@ import src.models.tree.Node;
 import src.models.tree.NodeFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Warehouse extends Node {
 
@@ -46,11 +48,34 @@ public class Warehouse extends Node {
 		return instance;
 	}
 
-	private void getColumns(ResultSet allColumns, Node entity) throws SQLException {
+	private void getColumns(DatabaseMetaData metaData, Node entity, String tableName) throws SQLException {
+		ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
+		ResultSet foreignKeys = metaData.getImportedKeys(Constants.DB_NAME, null, tableName);
+//		ArrayList<Attribute> attributes = new ArrayList<>();
+
 		while (allColumns.next()) {
 			String columnName = allColumns.getString("COLUMN_NAME");
 			Attribute attribute = (Attribute) NodeFactory.getInstance().getNode("ATTR", columnName);
+//			attributes.add(attribute);
 			entity.addChild(attribute);
+		}
+
+		// Get all relations between tables
+		while (foreignKeys.next()) {
+			// Relation Foreign Key
+			String fkTableName = foreignKeys.getString("FKTABLE_NAME");
+			String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
+
+			// Relation Primary Key
+			String pkTableName = foreignKeys.getString("PKTABLE_NAME");
+			String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
+//			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
+
+			for (Node attribute : entity.getChildren()) {
+				if (attribute.getName().equals(pkColumnName)) {
+					((Attribute) attribute).setPrimaryKey(true);
+				}
+			}
 		}
 	}
 
@@ -63,12 +88,9 @@ public class Warehouse extends Node {
 		while (allTables.next()) {
 			String tableName = allTables.getString("TABLE_NAME");
 			Node entity = NodeFactory.getInstance().getNode("ENT", tableName);
-			ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
-			getColumns(allColumns, entity);
+			getColumns(metaData, entity, tableName);
 
-			// Get all relations between tables
-//			printForeignKeys(dbConnection, metaData, tableName);
-			System.out.println("Table name: " + tableName);
+//			System.out.println("Table name: " + tableName);
 
 			// Add node
 			dbName.addChild(entity);
@@ -94,7 +116,8 @@ public class Warehouse extends Node {
 
 			DatabaseMetaData metaData = dbConnection.getMetaData();
 			generateTree(metaData);
-			dbConnection.close();
+			// TODO: Don't close connection!
+//			dbConnection.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
