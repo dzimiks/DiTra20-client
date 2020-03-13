@@ -46,6 +46,37 @@ public class Warehouse extends Node {
 		return instance;
 	}
 
+	private void getColumns(ResultSet allColumns, Node resource) throws SQLException {
+		while (allColumns.next()) {
+			String columnName = allColumns.getString("COLUMN_NAME");
+			Entity entity = (Entity) NodeFactory.getInstance().getNode("ENT", columnName);
+			resource.addChild(entity);
+		}
+	}
+
+	private void generateTree(DatabaseMetaData metaData) throws SQLException {
+		String[] dbTypes = {"TABLE"};
+		ResultSet allTables = metaData.getTables(null, null, null, dbTypes);
+		int tablesCount = 0;
+
+		while (allTables.next()) {
+			String tableName = allTables.getString("TABLE_NAME");
+			Node resource = NodeFactory.getInstance().getNode("IR", tableName);
+			ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
+			getColumns(allColumns, resource);
+
+			// Get all relations between tables
+//			printForeignKeys(dbConnection, metaData, tableName);
+			System.out.println("Table name: " + tableName);
+
+			// Add node
+			Warehouse.getInstance().addChild(resource);
+			tablesCount++;
+		}
+
+		System.out.println("\nFound " + tablesCount + " tables\n");
+	}
+
 	public void buildConnection() {
 		try {
 			// Important line so we can use SQL connection
@@ -59,40 +90,7 @@ public class Warehouse extends Node {
 			}
 
 			DatabaseMetaData metaData = dbConnection.getMetaData();
-			String[] dbTypes = {"TABLE"};
-			ResultSet allTables = metaData.getTables(null, null, null, dbTypes);
-			int tablesCount = 0;
-
-			while (allTables.next()) {
-				String tableName = allTables.getString("TABLE_NAME");
-				ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
-				Node resource = NodeFactory.getInstance().getNode("IR", tableName);
-
-				// Get all relations between tables
-				printForeignKeys(dbConnection, metaData, tableName);
-				System.out.println("Table: " + tableName);
-
-				while (allColumns.next()) {
-					String columnName = allColumns.getString("COLUMN_NAME");
-					Entity entity = (Entity) NodeFactory.getInstance().getNode("ENT", columnName);
-					resource.addChild(entity);
-				}
-
-				Warehouse.getInstance().addChild(resource);
-				tablesCount++;
-			}
-
-			System.out.println("\nFound " + tablesCount + " tables\n");
-
-			ResultSet allColumns = metaData.getColumns(null, null, Constants.DB_NAME, null);
-			int columnCount = 0;
-
-			while (allColumns.next()) {
-				System.out.println(allColumns.getString("COLUMN_NAME"));
-				columnCount++;
-			}
-
-			System.out.println("\nFound " + columnCount + " columns\n");
+			generateTree(metaData);
 			dbConnection.close();
 		} catch (Exception e) {
 			e.printStackTrace();
