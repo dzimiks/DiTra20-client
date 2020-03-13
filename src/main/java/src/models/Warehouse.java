@@ -46,11 +46,11 @@ public class Warehouse extends Node {
 		return instance;
 	}
 
-	private void getColumns(ResultSet allColumns, Node resource) throws SQLException {
+	private void getColumns(ResultSet allColumns, Node entity) throws SQLException {
 		while (allColumns.next()) {
 			String columnName = allColumns.getString("COLUMN_NAME");
-			Entity entity = (Entity) NodeFactory.getInstance().getNode("ENT", columnName);
-			resource.addChild(entity);
+			Attribute attribute = (Attribute) NodeFactory.getInstance().getNode("ATTR", columnName);
+			entity.addChild(attribute);
 		}
 	}
 
@@ -58,21 +58,24 @@ public class Warehouse extends Node {
 		String[] dbTypes = {"TABLE"};
 		ResultSet allTables = metaData.getTables(null, null, null, dbTypes);
 		int tablesCount = 0;
+		InformationResource dbName = (InformationResource) NodeFactory.getInstance().getNode("IR", Constants.DB_NAME);
 
 		while (allTables.next()) {
 			String tableName = allTables.getString("TABLE_NAME");
-			Node resource = NodeFactory.getInstance().getNode("IR", tableName);
+			Node entity = NodeFactory.getInstance().getNode("ENT", tableName);
 			ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
-			getColumns(allColumns, resource);
+			getColumns(allColumns, entity);
 
 			// Get all relations between tables
 //			printForeignKeys(dbConnection, metaData, tableName);
 			System.out.println("Table name: " + tableName);
 
 			// Add node
-			Warehouse.getInstance().addChild(resource);
+			dbName.addChild(entity);
 			tablesCount++;
 		}
+
+		Warehouse.getInstance().addChild(dbName);
 
 		System.out.println("\nFound " + tablesCount + " tables\n");
 	}
