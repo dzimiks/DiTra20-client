@@ -14,13 +14,11 @@ public class NodeFactory {
 			return null;
 		}
 
-		if (isTypeEqualToNode(type, "Warehouse")) {
-			return Warehouse.getInstance();
-		} else if (isTypeEqualToNode(type, "Information Resource")) {
+		if (isTypeEqualToNode(type, "IR")) {
 			return new InformationResource(name);
-		} else if (isTypeEqualToNode(type, "Entity")) {
+		} else if (isTypeEqualToNode(type, "ENT")) {
 			return new Entity(name);
-		} else if (isTypeEqualToNode(type, "Attribute")) {
+		} else if (isTypeEqualToNode(type, "ATTR")) {
 			return new Attribute(name);
 		}
 

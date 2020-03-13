@@ -25,8 +25,7 @@ public class Warehouse extends Node {
 		buildConnection();
 	}
 
-	private void printForeignKeys(Connection connection, String tableName) throws SQLException {
-		DatabaseMetaData metaData = connection.getMetaData();
+	private void printForeignKeys(Connection connection, DatabaseMetaData metaData, String tableName) throws SQLException {
 		ResultSet foreignKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
 
 		while (foreignKeys.next()) {
@@ -66,31 +65,19 @@ public class Warehouse extends Node {
 			ResultSet allTables = metaData.getTables(null, null, null, dbTypes);
 			int tablesCount = 0;
 
-			// Print all tables from all system and user defined tables
-			// ResultSet resultSet = metaData.getTables(null, null, "%", null);
-
 			while (allTables.next()) {
 				String tableName = allTables.getString("TABLE_NAME");
 				ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
-				Node resource = NodeFactory.getInstance().getNode("Information Resource", tableName);
+				Node resource = NodeFactory.getInstance().getNode("IR", tableName);
 
 				// Get all relations between tables
-				printForeignKeys(dbConnection, tableName);
+				printForeignKeys(dbConnection, metaData, tableName);
 				System.out.println("Table: " + tableName);
 
 				while (allColumns.next()) {
 					String columnName = allColumns.getString("COLUMN_NAME");
-					resource.addChild(new Entity(columnName));
-
-
-					// TODO: Get attributes
-//					ResultSet allAttributes = metaData.getAttributes(null, null, "%", null);
-//					System.out.println("> Column: " + columnName);
-//
-//					while (allAttributes.next()) {
-//						String attributeName = allAttributes.getString("ATTR_NAME");
-//						System.out.println(">> Attribute: " + attributeName);
-//					}
+					Entity entity = (Entity) NodeFactory.getInstance().getNode("ENT", columnName);
+					resource.addChild(entity);
 				}
 
 				Warehouse.getInstance().addChild(resource);

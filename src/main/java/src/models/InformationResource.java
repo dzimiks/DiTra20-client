@@ -1,6 +1,7 @@
 package src.models;
 
 import src.models.tree.Node;
+import src.models.tree.NodeFactory;
 
 public class InformationResource extends Node {
 
@@ -12,7 +13,9 @@ public class InformationResource extends Node {
 		super(resource.getName());
 
 		for (int i = 0; i < resource.getChildCount(); i++) {
-			this.addChild(new Entity((Entity) resource.getChildAt(i)));
+			Entity selectedEntity = (Entity) resource.getChildAt(i);
+			Entity entity = (Entity) NodeFactory.getInstance().getNode("ENT", selectedEntity.getName());
+			this.addChild(entity);
 		}
 	}
 }
