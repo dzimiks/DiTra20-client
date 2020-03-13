@@ -11,7 +11,6 @@ public class Warehouse extends Node {
 	private static Warehouse instance;
 
 	private String description;
-	private String metaschemaString;
 	private String location;
 	private String type;
 	private Connection dbConnection;
@@ -20,8 +19,7 @@ public class Warehouse extends Node {
 		super(name);
 	}
 
-	public void loadWarehouse(String metaschemaString) throws Exception {
-		this.metaschemaString = metaschemaString;
+	public void loadWarehouse() throws Exception {
 		buildConnection();
 	}
 
@@ -111,14 +109,6 @@ public class Warehouse extends Node {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getMetaschemaString() {
-		return metaschemaString;
-	}
-
-	public void setMetaschemaString(String metaschemaString) {
-		this.metaschemaString = metaschemaString;
 	}
 
 	public String getLocation() {

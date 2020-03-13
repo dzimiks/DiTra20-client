@@ -23,16 +23,7 @@ public class ToolbarView extends JToolBar {
 		connectToDB.setIcon(new ImageIcon(Constants.DATABASE_ICON));
 		connectToDB.addActionListener(e -> {
 			try {
-				InputStream inputStream = Main.class.getResourceAsStream(Constants.METASCHEMA_DB);
-				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-				StringBuilder metaschemaString = new StringBuilder();
-				String line;
-
-				while ((line = bufferedReader.readLine()) != null) {
-					metaschemaString.append(line);
-				}
-
-				Warehouse.getInstance().loadWarehouse(metaschemaString.toString());
+				Warehouse.getInstance().loadWarehouse();
 				this.treeView.refresh();
 			} catch (Exception ex) {
 				ex.printStackTrace();

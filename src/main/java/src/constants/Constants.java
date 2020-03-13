@@ -44,11 +44,6 @@ public class Constants {
 	public static final String WAREHOUSE_ICON = RESOURCES_PATH + "/images/tree/warehouse.png";
 
 	/**
-	 * Schemas
-	 */
-	public static final String METASCHEMA_DB = "/schemas/tim_403_2_si2019.json";
-
-	/**
 	 * Screen size
 	 */
 	public static final int SCREEN_SIZE_WIDTH = 1440;
