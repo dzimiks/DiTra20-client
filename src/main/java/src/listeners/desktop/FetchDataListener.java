@@ -1,5 +1,6 @@
 package src.listeners.desktop;
 
+import src.models.Record;
 import src.repository.DatabaseImplementation;
 import src.view.table.TabbedView;
 
@@ -15,8 +16,9 @@ public class FetchDataListener implements ActionListener {
 		try {
 			TabbedView.activePanel.clearTable();
 			DatabaseImplementation databaseImplementation = new DatabaseImplementation();
-			List<Object> records = databaseImplementation.readRecords();
-			TabbedView.activePanel.getTableModel().addRow(records.toArray());
+			List<Record> records = databaseImplementation.readRecords();
+			System.out.println("DATA: " + records.toArray());
+//			TabbedView.activePanel.getTableModel().addRow(records.toArray());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

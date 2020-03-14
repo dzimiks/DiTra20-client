@@ -1,5 +1,7 @@
 package src.repository;
 
+import src.models.Record;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public interface RepositoryImplementor {
 	/**
 	 * @return returns objects for specific table
 	 */
-	public List<Object> readRecords() throws SQLException;
+	public List<Record> readRecords() throws SQLException;
 
 	/**
 	 * @param object which needs to be updated

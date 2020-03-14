@@ -1,5 +1,6 @@
 package src.view.table;
 
+import src.config.SQLConfig;
 import src.constants.Constants;
 import src.listeners.desktop.AddDataListener;
 import src.listeners.desktop.FetchDataListener;
@@ -9,6 +10,8 @@ import src.view.WrapLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class TableToolbarView extends JPanel {
 
@@ -42,7 +45,22 @@ public class TableToolbarView extends JPanel {
 
 		this.dbAdd = new JButton("Add");
 		this.dbAdd.setIcon(new ImageIcon(Constants.ADD_ICON));
-		this.dbAdd.addActionListener(new AddDataListener());
+		this.dbAdd.addActionListener(event -> {
+			StringBuilder query = new StringBuilder();
+			query.append("INSERT INTO TYPES_OF_INSTITUTIONS (TIP_UST, TIP_NAZIV) VALUES (?, ?)");
+			System.out.println("Query: " + query);
+
+			try {
+				PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query.toString());
+				statement.setString(1, "M");
+				statement.setString(2, "Milane probaj ovo");
+				statement.executeUpdate();
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		});
+//		this.dbAdd.addActionListener(new AddDataListener());
 
 		this.dbUpdate = new JButton("Update");
 		this.dbUpdate.setIcon(new ImageIcon(Constants.UPDATE_ICON));
