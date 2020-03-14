@@ -37,3 +37,4 @@ gradle-app.setting
 
 .idea/
 /bin/
+out/
