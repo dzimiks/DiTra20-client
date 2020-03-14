@@ -1,9 +1,7 @@
 package src.config;
 
 import src.constants.Constants;
-import src.models.Attribute;
-import src.models.InformationResource;
-import src.models.Warehouse;
+import src.models.*;
 import src.models.datatypes.CharType;
 import src.models.datatypes.DateType;
 import src.models.datatypes.VarCharType;
@@ -12,6 +10,8 @@ import src.models.tree.NodeFactory;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLConfig extends DBConfig {
 
@@ -95,6 +95,9 @@ public class SQLConfig extends DBConfig {
 			entity.addChild(attribute);
 		}
 
+		List<Attribute> referringAttributes = new ArrayList<>();
+		List<Attribute> referencedAttributes = new ArrayList<>();
+
 		// Get all relations between tables
 		while (foreignKeys.next()) {
 			// Relation Foreign Key
@@ -104,14 +107,35 @@ public class SQLConfig extends DBConfig {
 			// Relation Primary Key
 			String pkTableName = foreignKeys.getString("PKTABLE_NAME");
 			String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-			// System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
 
-			for (Node attribute : entity.getChildren()) {
-				if (attribute.getName().equals(pkColumnName)) {
-					((Attribute) attribute).setPrimaryKey(true);
+//			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
+
+			for (Node node : entity.getChildren()) {
+				if (node.getName().equals(pkColumnName)) {
+					Attribute attribute = (Attribute) node;
+//					attribute.setName(fkTableName + "/" + attribute.getName());
+					attribute.setPrimaryKey(true);
+					// TODO: Add referencedAttributes
+					referencedAttributes.add(new Attribute(pkTableName + "/" + attribute.getName()));
+				}
+
+				if (node.getName().equals(fkColumnName)) {
+					Attribute attribute = (Attribute) node;
+					// TODO: Add referringAttributes
+					referringAttributes.add(attribute);
 				}
 			}
 		}
+
+		// TODO: Add relations
+		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, (Entity) entity));
+
+//		for (Relation relation : ((Entity) entity).getRelations()) {
+//			System.out.println(entity.getName());
+//			System.out.println("getReferencedAttributes: " + relation.getReferencedAttributes());
+//			System.out.println("getReferringAttributes:" + relation.getReferringAttributes());
+//			System.out.println();
+//		}
 	}
 
 	private void generateTree(DatabaseMetaData metaData) throws SQLException {

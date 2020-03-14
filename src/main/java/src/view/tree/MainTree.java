@@ -25,16 +25,16 @@ public class MainTree extends JTree implements MainObserver {
 
 				if (path != null && path.getLastPathComponent() instanceof Node) {
 					selectedNode = (Node) path.getLastPathComponent();
-					System.out.println("MainTree - selectedNode is not null: " + selectedNode);
+//					System.out.println("MainTree - selectedNode is not null: " + selectedNode);
 					path = selectedNode.getPath();
 				}
 
-				System.out.println("MainTree - selectedNode: " + selectedNode);
-				System.out.println("MainTree - TREE PATH: " + treePath);
-				System.out.println("MainTree - MAIN LAST: " + path);
+//				System.out.println("MainTree - selectedNode: " + selectedNode);
+//				System.out.println("MainTree - TREE PATH: " + treePath);
+//				System.out.println("MainTree - MAIN LAST: " + path);
 
 				if (treePath != path) {
-					System.out.println("DIFF");
+//					System.out.println("DIFF");
 					// TODO: It's not working
 					// this.setSelectionPath(treePath);
 				}

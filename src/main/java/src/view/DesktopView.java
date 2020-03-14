@@ -2,6 +2,7 @@ package src.view;
 
 import src.controllers.DesktopController;
 import src.controllers.TreeController;
+import src.models.Entity;
 import src.view.table.TabbedView;
 import src.view.table.TableToolbarView;
 import src.view.tree.TreeView;
@@ -13,6 +14,7 @@ public class DesktopView extends JPanel {
 
 	private TreeView treeView;
 	private TabbedView tabbedView;
+	private RelationView relationView;
 	private TableToolbarView tableToolbarView;
 
 	private TreeController treeController;
@@ -28,7 +30,8 @@ public class DesktopView extends JPanel {
 
 		this.treeView = treeView;
 		this.tabbedView = new TabbedView();
-		this.tableToolbarView = new TableToolbarView(null);
+		this.relationView = new RelationView(new Entity("dzimiks"));
+		this.tableToolbarView = new TableToolbarView(null, relationView);
 
 		this.treeController = new TreeController(treeView, tabbedView);
 		this.desktopController = new DesktopController(tabbedView);
@@ -47,6 +50,13 @@ public class DesktopView extends JPanel {
 
 		this.add(tableToolbarView, BorderLayout.NORTH);
 		this.add(splitPane, BorderLayout.CENTER);
+	}
+
+	public void setRelationView(RelationView relationView){
+		mainPanel.removeAll();
+		mainPanel.add(relationView, BorderLayout.CENTER);
+		mainPanel.revalidate();
+		mainPanel.repaint();
 	}
 
 	public TreeView getTreeView() {
