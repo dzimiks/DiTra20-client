@@ -1,6 +1,7 @@
 package src.view.dialog;
 
 
+import src.listeners.desktop.CancelButtonListener;
 import src.models.Attribute;
 import src.models.Entity;
 import src.models.tree.Node;
@@ -39,7 +40,6 @@ public class AddDataDialog extends JDialog implements Serializable {
 		setTitle(entity.getName());
 		setSize(500, 700);
 
-
 		setLocationRelativeTo(MainView.getInstance());
 		initialize();
 	}
@@ -65,7 +65,10 @@ public class AddDataDialog extends JDialog implements Serializable {
 		}
 
 		JButton btnOk = new JButton("OK");
+		//btnOk.addActionListener(new OkButtonListener());
+
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new CancelButtonListener(this));
 
 		btnOk.setBounds(155, y + 30, 50, height);
 		btnCancel.setBounds(225, y + 30, 80, height);

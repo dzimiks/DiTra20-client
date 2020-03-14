@@ -3,6 +3,7 @@ package src.view.table;
 import src.constants.Constants;
 import src.listeners.desktop.AddDataListener;
 import src.listeners.desktop.FetchDataListener;
+import src.listeners.desktop.UpdateDataListener;
 import src.models.Entity;
 import src.view.WrapLayout;
 
@@ -45,6 +46,7 @@ public class TableToolbarView extends JPanel {
 
 		this.dbUpdate = new JButton("Update");
 		this.dbUpdate.setIcon(new ImageIcon(Constants.UPDATE_ICON));
+		this.dbUpdate.addActionListener(new UpdateDataListener());
 
 		this.dbDelete = new JButton("Delete");
 		this.dbDelete.setIcon(new ImageIcon(Constants.DELETE_ICON));

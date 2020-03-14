@@ -1,5 +1,6 @@
 package src.view.table;
 
+import com.sun.prism.impl.Disposer;
 import src.models.Entity;
 import src.view.table.TablePanel;
 
@@ -57,4 +58,11 @@ public class TabbedView extends JTabbedPane {
 	public List<TablePanel> getTables() {
 		return tables;
 	}
+
+    public Disposer.Record getSelectedRow() {
+		if (getSelectedComponent() == null)
+			return null;
+
+		return (Disposer.Record) ((TablePanel) getSelectedComponent()).getEntity();
+    }
 }

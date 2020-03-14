@@ -29,6 +29,7 @@ public class TreeListener implements TreeSelectionListener {
 			Entity entity = (Entity) node;
 			tabbedView.addNewTab(entity);
 			System.out.println("TreeListener - Clicked on " + entity);
+
 		}
 	}
 }
