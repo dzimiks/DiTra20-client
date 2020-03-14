@@ -1,6 +1,6 @@
 package src.view.dialog;
 
-import com.sun.prism.impl.Disposer;
+
 import src.models.Attribute;
 import src.models.Entity;
 import src.models.tree.Node;
@@ -10,6 +10,7 @@ import src.view.table.TabbedView;
 import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class UpdateDataDialog extends JDialog implements Serializable {
 
@@ -45,14 +46,26 @@ public class UpdateDataDialog extends JDialog implements Serializable {
     public void initialize() {
         this.labels = new JLabel[size];
         this.textFields = new JTextField[size];
-        System.out.println("USO");
-        System.out.println(size);
+        String selectedData = "";
+
+        int selectedRow = tabbedView.getActivePanel().getTable().getSelectedRow();
+        int numberOfColumns = tabbedView.getActivePanel().getTable().getColumnCount();
+
+        for (int j = 0; j < numberOfColumns; j++) {
+            selectedData += " " + tabbedView.getActivePanel().getTable().getValueAt(selectedRow, j);
+        }
+
+        String[] cellValues = selectedData.split(" ");
+//        for (int i = 0; i < cellValues.length; i++)
+//            System.out.println("CellValue: " + cellValues[i]);
+
 
         for (int i = 0; i < size; i++) {
 
             this.attr = (Attribute) this.attributes.get(i);
             this.labels[i] = new JLabel(parseName(attr.getName()));
             this.textFields[i] = new JTextField();
+            this.textFields[i].setText(cellValues[i+1]);
 
             this.labels[i].setBounds(x_left, y, width, height);
             this.textFields[i].setBounds(x_right, y, width, height);

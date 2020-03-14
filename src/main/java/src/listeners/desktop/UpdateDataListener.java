@@ -1,6 +1,6 @@
 package src.listeners.desktop;
 
-import javafx.scene.control.Tab;
+
 import src.models.Entity;
 import src.view.dialog.AddDataDialog;
 import src.view.dialog.UpdateDataDialog;
