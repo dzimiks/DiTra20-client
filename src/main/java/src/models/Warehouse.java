@@ -95,6 +95,10 @@ public class Warehouse extends Node {
 			// Add node
 			dbName.addChild(entity);
 			tablesCount++;
+
+			if (tablesCount % 10 == 0) {
+				System.out.println("Fetched " + tablesCount + " tables");
+			}
 		}
 
 		Warehouse.getInstance().addChild(dbName);

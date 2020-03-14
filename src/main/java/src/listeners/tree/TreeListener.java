@@ -7,12 +7,12 @@ import src.view.tree.TreeView;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-public class DoubleClickListener implements TreeSelectionListener {
+public class TreeListener implements TreeSelectionListener {
 
 	private TreeView treeView;
 	private TabbedView tabbedView;
 
-	public DoubleClickListener(TreeView treeView, TabbedView tabbedView) {
+	public TreeListener(TreeView treeView, TabbedView tabbedView) {
 		this.treeView = treeView;
 		this.tabbedView = tabbedView;
 	}
@@ -27,9 +27,8 @@ public class DoubleClickListener implements TreeSelectionListener {
 
 		if (node instanceof Entity) {
 			Entity entity = (Entity) node;
-
 			tabbedView.addNewTab(entity);
-			System.out.println("Clicked on " + entity);
+			System.out.println("TreeListener - Clicked on " + entity);
 		}
 	}
 }

@@ -29,6 +29,7 @@ public class TreeView extends JPanel {
 		this.treeModel.setRoot(root);
 
 		this.tree = new MainTree();
+		Warehouse.getInstance().getObserverList().addObserver(tree);
 		this.tree.setModel(treeModel);
 
 		TreeCellRendered cellRendered = new TreeCellRendered();
@@ -58,6 +59,10 @@ public class TreeView extends JPanel {
 
 	public MainTree getTree() {
 		return tree;
+	}
+
+	public DefaultTreeModel getTreeModel() {
+		return treeModel;
 	}
 
 	public Node getSelectedNode() {
