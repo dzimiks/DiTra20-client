@@ -1,6 +1,7 @@
 package src.view.table;
 
 import src.constants.Constants;
+import src.listeners.desktop.AddDataListener;
 import src.listeners.desktop.FetchDataListener;
 import src.models.Entity;
 import src.view.WrapLayout;
@@ -22,6 +23,7 @@ public class TableToolbarView extends JPanel {
 
 	private JToolBar dbToolbar;
 
+
 	public TableToolbarView(Entity entity) {
 		this.entity = entity;
 		this.setLayout(new BorderLayout());
@@ -39,6 +41,7 @@ public class TableToolbarView extends JPanel {
 
 		this.dbAdd = new JButton("Add");
 		this.dbAdd.setIcon(new ImageIcon(Constants.ADD_ICON));
+		this.dbAdd.addActionListener(new AddDataListener());
 
 		this.dbUpdate = new JButton("Update");
 		this.dbUpdate.setIcon(new ImageIcon(Constants.UPDATE_ICON));
