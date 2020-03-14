@@ -1,7 +1,7 @@
 package src.view.table;
 
 import src.models.Attribute;
-import src.config.DBConfig;
+import src.config.SQLConfig;
 import src.models.Entity;
 import src.models.tree.Node;
 
@@ -55,7 +55,7 @@ public class TablePanel extends JPanel {
 		System.out.println(query);
 		System.out.println("==========\n");
 
-		PreparedStatement statement = DBConfig.getInstance().getDbConnection().prepareStatement(query);
+		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();
 
 		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {

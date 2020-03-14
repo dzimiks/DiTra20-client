@@ -1,6 +1,6 @@
 package src.models;
 
-import src.config.DBConfig;
+import src.config.SQLConfig;
 import src.constants.Constants;
 import src.models.tree.Node;
 
@@ -17,7 +17,7 @@ public class Warehouse extends Node {
 	}
 
 	public void loadWarehouse() {
-		DBConfig.getInstance().buildConnection();
+		SQLConfig.getInstance().buildConnection();
 	}
 
 	public static Warehouse getInstance() {
