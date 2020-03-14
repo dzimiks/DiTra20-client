@@ -1,6 +1,7 @@
 package src.view;
 
 import src.constants.Constants;
+import src.listeners.tree.GenerateTreeListener;
 import src.main.Main;
 import src.models.Warehouse;
 import src.view.tree.TreeView;
@@ -21,14 +22,7 @@ public class ToolbarView extends JToolBar {
 		JButton connectToDB = new JButton();
 		connectToDB.setToolTipText("Connect to DB");
 		connectToDB.setIcon(new ImageIcon(Constants.DATABASE_ICON));
-		connectToDB.addActionListener(e -> {
-			try {
-				Warehouse.getInstance().loadWarehouse();
-				this.treeView.refresh();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		});
+		connectToDB.addActionListener(new GenerateTreeListener(treeView));
 
 		this.add(connectToDB);
 		this.setFloatable(false);
