@@ -4,9 +4,13 @@ import src.constants.Constants;
 import src.models.Attribute;
 import src.models.InformationResource;
 import src.models.Warehouse;
+import src.models.datatypes.CharType;
+import src.models.datatypes.DateType;
+import src.models.datatypes.VarCharType;
 import src.models.tree.Node;
 import src.models.tree.NodeFactory;
 
+import java.math.BigDecimal;
 import java.sql.*;
 
 public class SQLConfig extends DBConfig {
@@ -35,9 +39,59 @@ public class SQLConfig extends DBConfig {
 		ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
 		ResultSet foreignKeys = metaData.getImportedKeys(Constants.DB_NAME, null, tableName);
 
+		ResultSetMetaData resultSetMetaData = allColumns.getMetaData();
+
 		while (allColumns.next()) {
 			String columnName = allColumns.getString("COLUMN_NAME");
+			String columnType = allColumns.getString("TYPE_NAME");
+			String columnSize = allColumns.getString("COLUMN_SIZE");
+			String decimalDigits = allColumns.getString("DECIMAL_DIGITS");
+			String isNullable = allColumns.getString("IS_NULLABLE");
+			Class<?> valueClass = null;
+
+			switch (columnType) {
+				case "CHAR":
+					valueClass = CharType.class;
+					break;
+				case "VARCHAR":
+				case "LONGTEXT":
+					valueClass = VarCharType.class;
+					break;
+				case "DATE":
+					valueClass = DateType.class;
+					break;
+				case "BOOLEAN":
+				case "BIT":
+					valueClass = Boolean.class;
+					break;
+				case "INT":
+				case "SMALLINT":
+					valueClass = Integer.class;
+					break;
+				case "BIGINT":
+					valueClass = Long.class;
+					break;
+				case "DECIMAL":
+					valueClass = BigDecimal.class;
+					break;
+				case "LONGBLOB":
+					break;
+				default:
+					throw new SQLException("Unknown type: " + columnType);
+			}
+
+//			TODO
+//			System.out.println("columnName: " + columnName);
+//			System.out.println("columnType: " + columnType);
+//			System.out.println("columnSize: " + columnSize);
+//			System.out.println("decimalDigits: " + decimalDigits);
+//			System.out.println("isNullable: " + isNullable);
+//			System.out.println("valueClass: " + valueClass);
+//			System.out.println();
+
 			Attribute attribute = (Attribute) NodeFactory.getInstance().getNode("ATTR", columnName);
+			attribute.setLength(Integer.parseInt(columnSize));
+			attribute.setValueClass(valueClass);
 			entity.addChild(attribute);
 		}
 
