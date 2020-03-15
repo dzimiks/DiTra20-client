@@ -35,8 +35,10 @@ public class DatabaseImplementation implements RepositoryImplementor {
 
 		Entity newRecordEntity = newRecord.getEntity();
 
+
 		List<Node> newRecordAttributes = newRecordEntity.getChildren();
         List<String> newRecordTextFields = newRecord.getTextFields();
+
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
@@ -48,10 +50,12 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		sb.delete(sb.length() - 2, sb.length());
 		sb.append(") VALUES ('");
 
-		//TODO check if text is tipe of string(not sure if its posible to be string)
-		for (int i = 0; i < newRecord.getTextFields().size(); i++) {
-			sb.append(newRecord.getTextFields().get(i)).append("', '");
-		}
+
+        //TODO check if text is tipe of string(not sure if its posible to be string)
+        for (int i = 0; i < newRecord.getTextFields().size(); i++) {
+            sb.append(newRecordTextFields.get(i)).append("', '");
+        }
+
 
 		sb.delete(sb.length() - 4, sb.length());
 		sb.append("')");
@@ -127,6 +131,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		List<Node> oldRecordAttributes = oldRecordEntity.getChildren();
 		List<String> oldRecordTextFields = recordToUpdate.getTextFields();
 
+
 		int i = 0;
 
 		StringBuilder sb = new StringBuilder();
@@ -157,10 +162,38 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		}
 	}
 
-	@Override
-	public void deleteRecord(Object object) {
-		System.out.println("delete record");
-	}
+
+    @Override
+    public void deleteRecord(Object object) {
+        Record recordToDelete = (Record) object;
+
+        Entity recordToDeleteEntity = recordToDelete.getEntity();
+        ArrayList<Node> recordToDeleteAttributes = (ArrayList<Node>) recordToDeleteEntity.getChildren();
+        ArrayList<String> recordToDeleteTextFields = (ArrayList<String>) recordToDelete.getTextFields();
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ").append(recordToDeleteEntity.getName());
+
+        sb.append(" WHERE ");
+
+        int i = 0;
+
+        for (Node node : recordToDeleteAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" LIKE '").append(recordToDeleteTextFields.get(i)).append("%' AND ");
+            i++;
+        }
+        sb.delete(sb.length() - 5, sb.length());
+
+        System.out.println("QUERY: " + sb);
+
+        try {
+            PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 	private String clobToString(Clob data) {
 		StringBuilder sb = new StringBuilder();
