@@ -10,14 +10,14 @@ import java.awt.event.ActionListener;
 
 public class CancelButtonListener implements ActionListener {
 
-    private AddDataDialog addDataDialog;
+    private JDialog dialogToClose;
 
-    public CancelButtonListener(AddDataDialog addDataDialog) {
-        this.addDataDialog = addDataDialog;
+    public CancelButtonListener(JDialog dialogToClose) {
+        this.dialogToClose = dialogToClose;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        addDataDialog.setVisible(false);
+        dialogToClose.setVisible(false);
     }
 }

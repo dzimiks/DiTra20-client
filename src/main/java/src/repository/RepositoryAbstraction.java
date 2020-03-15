@@ -24,9 +24,10 @@ public interface RepositoryAbstraction {
 	//TODO  maybe put observer here so the table can be refreshed after reading records
 
 	/**
-	 * @param object which needs to be updated
+	 * @param oldRecord which needs to be updated
+	 * @param newRecord record which replaces oldRecord
 	 */
-	public void updateRecord(Object object);
+	public void updateRecord(Object newRecord,Object oldRecord);
 
 	//TODO maybe update record based on record id(could be string between brackets instead of object)
 	//TODO  maybe put observer here so the table can be refreshed after reading records

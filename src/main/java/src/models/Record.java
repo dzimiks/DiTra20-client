@@ -7,6 +7,7 @@ public class Record implements Comparable<Record> {
 	private List<Object> data;
 	private Map<Attribute, Object> attributes;
 	private Entity entity;
+	private List<String> textFields;
 
 	public Record() {
 		this.data = new ArrayList<>();
@@ -17,6 +18,7 @@ public class Record implements Comparable<Record> {
 		this.entity = entity;
 		this.data = new ArrayList<>();
 		this.attributes = new LinkedHashMap<>();
+		this.textFields = new ArrayList<>();
 	}
 
 	public void addObject(Object object) {
@@ -49,6 +51,10 @@ public class Record implements Comparable<Record> {
 
 	public Entity getEntity() {
 		return entity;
+	}
+
+	public List<String> getTextFields() {
+		return textFields;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class RepositoryImplementation implements RepositoryAbstraction {
 	}
 
 	@Override
-	public void updateRecord(Object object) {
+	public void updateRecord(Object newRecord,Object oldRecord) {
 
 	}
 

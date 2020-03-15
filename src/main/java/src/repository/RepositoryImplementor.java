@@ -19,9 +19,10 @@ public interface RepositoryImplementor {
 	public List<Record> readRecords() throws SQLException;
 
 	/**
-	 * @param object which needs to be updated
+	 * @param oldRecord which needs to be updated
+	 * @param newRecord record which replaces oldRecord
 	 */
-	public void updateRecord(Object object);
+	public void updateRecord(Object newRecord,Object oldRecord);
 
 	/**
 	 * @param object which needs to be deleted

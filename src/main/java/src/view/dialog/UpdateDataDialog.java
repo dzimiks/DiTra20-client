@@ -1,23 +1,28 @@
 package src.view.dialog;
 
 
+import src.listeners.desktop.CancelButtonListener;
 import src.models.Attribute;
 import src.models.Entity;
+import src.models.Record;
+import src.models.datatypes.CharType;
+import src.models.datatypes.DateType;
+import src.models.datatypes.VarCharType;
 import src.models.tree.Node;
+import src.repository.DatabaseImplementation;
 import src.view.MainView;
 import src.view.table.TabbedView;
 
 import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class UpdateDataDialog extends JDialog implements Serializable {
 
     private int height = 25;
-    private int width = 180;
-    private int x_left = 40;
-    private int x_right = 250;
+    private int width = 100;
+    private int x_left = 20;
+    private int x_right = 130;
     private int y = 10;
 
     private int size;
@@ -26,6 +31,7 @@ public class UpdateDataDialog extends JDialog implements Serializable {
     private Attribute attr;
 
     private JLabel[] labels;
+    private JLabel[] types;
     private JTextField[] textFields;
     private TabbedView tabbedView;
 
@@ -46,18 +52,27 @@ public class UpdateDataDialog extends JDialog implements Serializable {
     public void initialize() {
         this.labels = new JLabel[size];
         this.textFields = new JTextField[size];
+        this.types = new JLabel[size];
+
         String selectedData = "";
 
         int selectedRow = tabbedView.getActivePanel().getTable().getSelectedRow();
         int numberOfColumns = tabbedView.getActivePanel().getTable().getColumnCount();
 
+        //TODO Enable casting every type of data into string
         for (int j = 0; j < numberOfColumns; j++) {
-            selectedData += " " + tabbedView.getActivePanel().getTable().getValueAt(selectedRow, j);
+            String columnName = tabbedView.getActivePanel().getTable().getColumnName(j);
+            String value = String.valueOf(tabbedView.getActivePanel().getTable().getValueAt(selectedRow, j));
+
+            selectedData += value+ " ";
         }
 
+        System.out.println("SIZE: "+ size);
+
         String[] cellValues = selectedData.split(" ");
-//        for (int i = 0; i < cellValues.length; i++)
-//            System.out.println("CellValue: " + cellValues[i]);
+        System.out.println("CellVALUES LENGTH"+ cellValues.length);
+        for (int i = 0; i < cellValues.length; i++)
+            System.out.println("CellValue: " + cellValues[i]);
 
 
         for (int i = 0; i < size; i++) {
@@ -65,19 +80,32 @@ public class UpdateDataDialog extends JDialog implements Serializable {
             this.attr = (Attribute) this.attributes.get(i);
             this.labels[i] = new JLabel(parseName(attr.getName()));
             this.textFields[i] = new JTextField();
-            this.textFields[i].setText(cellValues[i+1]);
+            String cellText = cellValues[i];
+//            System.out.println("Cell text"+cellText);
+            this.textFields[i].setText(cellText);
+            this.types[i] = new JLabel(getType(attr));
 
             this.labels[i].setBounds(x_left, y, width, height);
             this.textFields[i].setBounds(x_right, y, width, height);
+            this.types[i].setBounds(x_right+120,y,width,height);
 
             y += 40;
             add(labels[i]);
             add(textFields[i]);
+            add(types[i]);
         }
-
+        Record oldRecord = prepareObjectForUpdate();
 
         JButton btnOk = new JButton("OK");
         JButton btnCancel = new JButton("Cancel");
+
+        btnCancel.addActionListener(new CancelButtonListener(this));
+        btnOk.addActionListener(actionEvent -> {
+            Record newRecord = prepareObjectForUpdate();
+            DatabaseImplementation databaseImplementation = new DatabaseImplementation();
+            databaseImplementation.updateRecord(newRecord,oldRecord);
+            this.setVisible(false);
+        });
 
         btnOk.setBounds(135, y + 50, 50, height);
         btnCancel.setBounds(195, y + 50, 80, height);
@@ -104,5 +132,101 @@ public class UpdateDataDialog extends JDialog implements Serializable {
 
         sb.append(": ");
         return sb.toString();
+    }
+    private String getType(Attribute attr2) {
+        if (attr2.getValueClass() == VarCharType.class) {
+            if (attr2.isPrimaryKey()) {
+                return "*VarChar (" + attr2.getLength() + ")";
+            }
+
+            return "VarChar (" + attr2.getLength() + ")";
+        }
+        else if (attr2.getValueClass() == CharType.class) {
+            if (attr2.isPrimaryKey()) {
+                return "*Char (" + attr2.getLength() + ")";
+            }
+
+            return "Char (" + attr2.getLength() + ")";
+        }
+        else if (attr2.getValueClass() == DateType.class) {
+            if (attr2.isPrimaryKey()) {
+                return "*Date (" + attr2.getLength() + ")";
+            }
+
+            return "Date (" + attr2.getLength() + ")";
+        }
+        else if (attr2.getValueClass() == Boolean.class) {
+            if (attr2.isPrimaryKey()) {
+                return "*Boolean (" + attr2.getLength() + ")";
+            }
+
+            return "Boolean (" + attr2.getLength() + ")";
+        }
+        else if (attr2.getValueClass() == Integer.class) {
+            if (attr2.isPrimaryKey()) {
+                return "*Numeric (" + attr2.getLength() + ")";
+            }
+
+            return "Numeric (" + attr2.getLength() + ")";
+        }
+
+        return null;
+    }
+
+    public Record prepareObjectForUpdate(){
+        Record record = new Record(entity);
+        boolean error = false;
+        Attribute attribute = null;
+        String fieldText = null;
+
+        for (int i = 0; i < size; i++) {
+            attribute = ((Attribute) attributes.get(i));
+            System.out.println("DSADASDASD: "+ this.textFields[i]);
+            fieldText = this.textFields[i].getText();
+            record.getTextFields().add(this.textFields[i].getText());
+
+            if (attribute.isPrimaryKey() && fieldText.equals("")) {
+                error = true;
+                JOptionPane.showMessageDialog(new JFrame(), "Attribute " + attribute.getName() + " must be entered",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+            if (attribute.getLength() < fieldText.length()) {
+                error = true;
+                JOptionPane.showMessageDialog(new JFrame(), "Attribute " + attribute.getName()
+                                + " mustn't be longer than" + attribute.getLength() + "characters", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+            if (!(fieldText.equals("")) && (attribute.getValueClass() == Boolean.class)
+                    && !((fieldText.equals("true") || fieldText.equals("false")))) {
+                error = true;
+                JOptionPane.showMessageDialog(new JFrame(),
+                        "Attribute " + attribute.getName() + " must be true or false, but is neither", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                break;
+            }
+            if (!(fieldText.equals("")) && attribute.getValueClass() == Integer.class) {
+                try {
+                    int a = Integer.parseInt(fieldText);
+                } catch (NumberFormatException ex) {
+                    error = true;
+                    JOptionPane.showMessageDialog(new JFrame(),
+                            "Attribute " + attribute.getName() + " should be numeric value but is not", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+            }
+            if (!(fieldText.equals("")) && attribute.getValueClass() == DateType.class) {
+                if (!DateType.isValidDate(fieldText)) {
+                    error = true;
+                    JOptionPane.showMessageDialog(new JFrame(),
+                            "Attribute " + attribute.getName() + " should be date format but it's not", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+            }
+        }
+        return record;
     }
 }
