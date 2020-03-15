@@ -39,8 +39,6 @@ public class SQLConfig extends DBConfig {
 		ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
 		ResultSet foreignKeys = metaData.getImportedKeys(Constants.DB_NAME, null, tableName);
 
-		ResultSetMetaData resultSetMetaData = allColumns.getMetaData();
-
 		while (allColumns.next()) {
 			String columnName = allColumns.getString("COLUMN_NAME");
 			String columnType = allColumns.getString("TYPE_NAME");
@@ -97,6 +95,7 @@ public class SQLConfig extends DBConfig {
 
 		List<Attribute> referringAttributes = new ArrayList<>();
 		List<Attribute> referencedAttributes = new ArrayList<>();
+		Entity referencedEntity = null;
 
 		// Get all relations between tables
 		while (foreignKeys.next()) {
@@ -110,13 +109,16 @@ public class SQLConfig extends DBConfig {
 
 //			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
 
+			referencedEntity = new Entity(fkTableName);
+
 			for (Node node : entity.getChildren()) {
 				if (node.getName().equals(pkColumnName)) {
 					Attribute attribute = (Attribute) node;
 //					attribute.setName(fkTableName + "/" + attribute.getName());
 					attribute.setPrimaryKey(true);
 					// TODO: Add referencedAttributes
-					referencedAttributes.add(new Attribute(pkTableName + "/" + attribute.getName()));
+//					referencedAttributes.add(new Attribute(pkTableName + "/" + attribute.getName()));
+					referencedAttributes.add(attribute);
 				}
 
 				if (node.getName().equals(fkColumnName)) {
@@ -128,7 +130,7 @@ public class SQLConfig extends DBConfig {
 		}
 
 		// TODO: Add relations
-		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, (Entity) entity));
+		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, referencedEntity));
 
 //		for (Relation relation : ((Entity) entity).getRelations()) {
 //			System.out.println(entity.getName());

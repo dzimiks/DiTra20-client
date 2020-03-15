@@ -71,7 +71,17 @@ public class TableToolbarView extends JPanel {
 			desktopView.setRelationView(relationView);
 			desktopView.repaint();
 
-			Entity activeEntity = TabbedView.getActivePanel().getEntity();
+			if (TabbedView.activePanel == null) {
+				JOptionPane.showMessageDialog(
+						new JFrame(),
+						"TabbedView.activePanel is null!",
+						"TableToolbarView: Error",
+						JOptionPane.ERROR_MESSAGE
+				);
+				return;
+			}
+
+			Entity activeEntity = TabbedView.activePanel.getEntity();
 			List<Relation> relations = activeEntity.getRelations();
 			int selectedIndex = TabbedView.getActivePanel().getTable().getSelectedRow();
 			Record currentRecord = new Record(entity);
@@ -80,6 +90,16 @@ public class TableToolbarView extends JPanel {
 			System.out.println("> relations: " + relations);
 			System.out.println("selectedIndex: " + selectedIndex);
 			System.out.println("activePanel.getColumnCount(): " + TabbedView.activePanel.getTable().getColumnCount());
+
+			if (selectedIndex < 0) {
+				JOptionPane.showMessageDialog(
+						new JFrame(),
+						"Selected index is " + selectedIndex,
+						"TableToolbarView: Error",
+						JOptionPane.ERROR_MESSAGE
+				);
+				return;
+			}
 
 			for (int i = 0; i < TabbedView.activePanel.getTable().getColumnCount(); i++) {
 				Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(selectedIndex, i);

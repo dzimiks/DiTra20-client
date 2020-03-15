@@ -54,19 +54,19 @@ public class UpdateDataDialog extends JDialog implements Serializable {
         this.textFields = new JTextField[size];
         this.types = new JLabel[size];
 
-        String selectedData = "";
+        StringBuilder selectedData = new StringBuilder();
 
-        int selectedRow = tabbedView.getActivePanel().getTable().getSelectedRow();
-        int numberOfColumns = tabbedView.getActivePanel().getTable().getColumnCount();
+        int selectedRow = TabbedView.getActivePanel().getTable().getSelectedRow();
+        int numberOfColumns = TabbedView.getActivePanel().getTable().getColumnCount();
 
         for (int j = 0; j < numberOfColumns; j++) {
-            String columnName = tabbedView.getActivePanel().getTable().getColumnName(j);
-            String value = String.valueOf(tabbedView.getActivePanel().getTable().getValueAt(selectedRow, j));
+            String columnName = TabbedView.getActivePanel().getTable().getColumnName(j);
+            String value = String.valueOf(TabbedView.getActivePanel().getTable().getValueAt(selectedRow, j));
 
-            selectedData += value+ " ";
+            selectedData.append(value).append(" ");
         }
 
-        String[] cellValues = selectedData.split(" ");
+        String[] cellValues = selectedData.toString().split(" ");
 //        System.out.println("CellVALUES LENGTH"+ cellValues.length);
 //        for (int i = 0; i < cellValues.length; i++)
 //            System.out.println("CellValue: " + cellValues[i]);

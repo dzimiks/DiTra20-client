@@ -46,20 +46,20 @@ public class DeleteDataDialog extends JDialog {
     public void initialize() {
         this.textFields = new JTextField[size];
 
-        String selectedData = "";
+        StringBuilder selectedData = new StringBuilder();
 
-        int selectedRow = tabbedView.getActivePanel().getTable().getSelectedRow();
-        int numberOfColumns = tabbedView.getActivePanel().getTable().getColumnCount();
+        int selectedRow = TabbedView.getActivePanel().getTable().getSelectedRow();
+        int numberOfColumns = TabbedView.getActivePanel().getTable().getColumnCount();
 
 
         for (int j = 0; j < numberOfColumns; j++) {
-            String columnName = tabbedView.getActivePanel().getTable().getColumnName(j);
-            String value = String.valueOf(tabbedView.getActivePanel().getTable().getValueAt(selectedRow, j));
+            String columnName = TabbedView.getActivePanel().getTable().getColumnName(j);
+            String value = String.valueOf(TabbedView.getActivePanel().getTable().getValueAt(selectedRow, j));
 
-            selectedData += value+ " ";
+            selectedData.append(value).append(" ");
         }
 
-        String[] cellValues = selectedData.split(" ");
+        String[] cellValues = selectedData.toString().split(" ");
 
         for (int i = 0; i < size; i++) {
             this.textFields[i] = new JTextField();
