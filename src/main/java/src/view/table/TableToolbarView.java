@@ -83,7 +83,7 @@ public class TableToolbarView extends JPanel {
 
 			Entity activeEntity = TabbedView.activePanel.getEntity();
 			List<Relation> relations = activeEntity.getRelations();
-			int selectedIndex = TabbedView.getActivePanel().getTable().getSelectedRow();
+			int selectedIndex = TabbedView.activePanel.getTable().getSelectedRow();
 			Record currentRecord = new Record(entity);
 
 			System.out.println("activeEntity: " + activeEntity);
@@ -110,9 +110,9 @@ public class TableToolbarView extends JPanel {
 				Entity referencedEntity = relation.getReferencedEntity();
 				List<Attribute> referringAttributes = relation.getReferringAttributes();
 				List<Attribute> referencedAttributes = relation.getReferencedAttributes();
-				ArrayList<Integer> referringIndex = new ArrayList<>();
-				ArrayList<Integer> referencedIndex = new ArrayList<>();
-				ArrayList<Record> recordsToShow = new ArrayList<>();
+				List<Integer> referringIndex = new ArrayList<>();
+				List<Integer> referencedIndex = new ArrayList<>();
+				List<Record> recordsToShow = new ArrayList<>();
 
 				for (Attribute referringAttribute : referringAttributes) { // Za svaku relaciju prolazim kroz listu Atributa
 					// po kojima je u vezi sa drugim entitetom
@@ -142,34 +142,31 @@ public class TableToolbarView extends JPanel {
 				}
 
 				// TODO
-//					referencedEntity.getFileData();
+				for (int j = 0; j < TabbedView.activePanel.getTable().getModel().getRowCount(); j++) {
+					Record newRecord = new Record(entity);
+					boolean isOkRecord = true;
 
-//					for(int j = 0; j < TabbedView.activePanel.getTable().getModel().getRowCount(); j++){
-////						Record newRecord = referencedEntity.readRecordFrom(j, false);
-//						Record newRecord = new Record(entity);
-//						boolean isOkRecord = true;
-//
-//						for (int ind = 0; ind < TabbedView.activePanel.getTable().getColumnCount(); ind++) {
-//							Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(j, ind);
-//							newRecord.addObject(obj);
-//						}
-//
-//						for(int m = 0; m < referencedIndex.size(); m++){
-//
-//							if(!newRecord.getPodaci().get(referencedIndex.get(m)).equals(currentRecord.getPodaci().get(referringIndex.get(m)))){
-//								isOkRecord = false;
-//							}
-//						}
-//
-//						if(isOkRecord){
-//							recordsToShow.add(newRecord);
-//						}
-//					}
+					for (int ind = 0; ind < TabbedView.activePanel.getTable().getColumnCount(); ind++) {
+						Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(j, ind);
+						newRecord.addObject(obj);
+					}
 
+					for (int m = 0; m < referencedIndex.size(); m++) {
+						if (!newRecord.getData().get(referencedIndex.get(m)).equals(currentRecord.getData().get(referringIndex.get(m)))) {
+							isOkRecord = false;
+							break;
+						}
+					}
+
+					if (isOkRecord) {
+						recordsToShow.add(newRecord);
+					}
+				}
+
+				System.out.println("recordsToShow: " + recordsToShow);
 				System.out.println("referencedEntity: " + referencedEntity);
 				System.out.println("referringAttributes: " + referringAttributes);
 				System.out.println("referencedAttributes: " + referencedAttributes);
-
 
 				relationView.addNewDBTab(referencedEntity, referringAttributes, referencedAttributes);
 				desktopView.repaint();

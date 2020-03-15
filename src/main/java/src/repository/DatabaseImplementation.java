@@ -80,9 +80,9 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		String query = "SELECT * FROM " + entity.getName();
 		List<Record> records = new ArrayList<>();
 
-//		System.out.println("\n==========");
-//		System.out.println(query);
-//		System.out.println("==========\n");
+		System.out.println("\n==========");
+		System.out.println(query);
+		System.out.println("==========\n");
 
 		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();

@@ -58,6 +58,9 @@ public class RelationPanel extends JPanel {
 	}
 
 	public RelationPanel(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {
+		System.out.println("RelationPanel constructor: " +
+				entity + " -> " + referringAttributes + " <- " + referencedAttributes);
+
 		this.entity = entity;
 		this.referringAttributes = referringAttributes;
 		this.referencedAttributes = referencedAttributes;
@@ -115,7 +118,7 @@ public class RelationPanel extends JPanel {
 		}
 
 		query.delete(query.length() - 5, query.length());
-		System.out.println("Relation Panel query: " + query.toString());
+		System.out.println(">>> Relation Panel query: " + query.toString());
 
 //		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query.toString());
 		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement("SELECT * FROM HIGH_EDUCATION_INSTITUTION");
@@ -128,8 +131,11 @@ public class RelationPanel extends JPanel {
 
 		while (resultSet.next()) {
 			Record record = new Record();
+			System.out.println(TabbedView.activePanel.getEntity());
 
-			for (Node node : entity.getChildren()) {
+			for (Node node : TabbedView.activePanel.getEntity().getChildren()) {
+				System.out.println("*** Node: " + node);
+
 				if (node instanceof Attribute) {
 					Object value = resultSet.getObject(node.getName());
 
@@ -144,7 +150,6 @@ public class RelationPanel extends JPanel {
 
 			System.out.println("RELATION PANEL RECORD: " + record.getData());
 			model.addRow(record.getData().toArray());
-//			records.add(record);
 		}
 
 		resultSet.close();

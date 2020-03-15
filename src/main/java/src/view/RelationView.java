@@ -28,17 +28,18 @@ public class RelationView extends JPanel {
 
 	public void addNewDBTab(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {
 		RelationPanel relationPanel = new RelationPanel(entity, referringAttributes, referencedAttributes);
-		System.out.println("RelationView - relationPanel: " + relationPanel.getName());
+		System.out.println("RelationView - relationPanel: " + relationPanel);
+		System.out.println(entity.getName());
 
-		if (relationPanel.getName() == null) {
-			JOptionPane.showMessageDialog(
-					new JFrame(),
-					"RelationPanel is null!",
-					"RelationView: Error",
-					JOptionPane.ERROR_MESSAGE
-			);
-			return;
-		}
+//		if (relationPanel.getName() == null) {
+//			JOptionPane.showMessageDialog(
+//					new JFrame(),
+//					"RelationPanel is null!",
+//					"RelationView: Error",
+//					JOptionPane.ERROR_MESSAGE
+//			);
+//			return;
+//		}
 
 		tabbedPane.addTab(entity.getName(), relationPanel);
 		int index = tabbedPane.getTabCount() - 1;

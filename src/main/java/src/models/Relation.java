@@ -27,7 +27,7 @@ public class Relation {
 
 	@Override
 	public String toString() {
-		return name;
+		return referencedEntity == null ? null : referencedEntity.getName();
 	}
 
 	public String getName() {

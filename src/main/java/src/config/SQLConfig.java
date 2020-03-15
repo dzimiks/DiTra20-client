@@ -35,10 +35,7 @@ public class SQLConfig extends DBConfig {
 		return dbConnection;
 	}
 
-	private void getColumns(DatabaseMetaData metaData, Node entity, String tableName) throws SQLException {
-		ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
-		ResultSet foreignKeys = metaData.getImportedKeys(Constants.DB_NAME, null, tableName);
-
+	private void getAttributes(ResultSet allColumns, Node entity) throws SQLException {
 		while (allColumns.next()) {
 			String columnName = allColumns.getString("COLUMN_NAME");
 			String columnType = allColumns.getString("TYPE_NAME");
@@ -73,29 +70,30 @@ public class SQLConfig extends DBConfig {
 					valueClass = BigDecimal.class;
 					break;
 				case "LONGBLOB":
+					valueClass = Blob.class;
 					break;
 				default:
 					throw new SQLException("Unknown type: " + columnType);
 			}
-
-//			TODO
-//			System.out.println("columnName: " + columnName);
-//			System.out.println("columnType: " + columnType);
-//			System.out.println("columnSize: " + columnSize);
-//			System.out.println("decimalDigits: " + decimalDigits);
-//			System.out.println("isNullable: " + isNullable);
-//			System.out.println("valueClass: " + valueClass);
-//			System.out.println();
 
 			Attribute attribute = (Attribute) NodeFactory.getInstance().getNode("ATTR", columnName);
 			attribute.setLength(Integer.parseInt(columnSize));
 			attribute.setValueClass(valueClass);
 			entity.addChild(attribute);
 		}
+	}
+
+	private void getColumns(DatabaseMetaData metaData, Node entity, String tableName) throws SQLException {
+		ResultSet allColumns = metaData.getColumns(null, null, tableName, null);
+		ResultSet foreignKeys = metaData.getImportedKeys(Constants.DB_NAME, null, tableName);
+
+		// TODO
+		getAttributes(allColumns, entity);
 
 		List<Attribute> referringAttributes = new ArrayList<>();
 		List<Attribute> referencedAttributes = new ArrayList<>();
 		Entity referencedEntity = null;
+		int magicCounter = 0;
 
 		// Get all relations between tables
 		while (foreignKeys.next()) {
@@ -109,15 +107,19 @@ public class SQLConfig extends DBConfig {
 
 //			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
 
-			referencedEntity = new Entity(fkTableName);
+			if (magicCounter == 0) {
+				ResultSet allColumnsRelation = metaData.getColumns(null, null, pkTableName, null);
+				referencedEntity = new Entity(pkTableName);
+				getAttributes(allColumnsRelation, referencedEntity);
+			}
+
+			magicCounter++;
 
 			for (Node node : entity.getChildren()) {
 				if (node.getName().equals(pkColumnName)) {
 					Attribute attribute = (Attribute) node;
-//					attribute.setName(fkTableName + "/" + attribute.getName());
 					attribute.setPrimaryKey(true);
 					// TODO: Add referencedAttributes
-//					referencedAttributes.add(new Attribute(pkTableName + "/" + attribute.getName()));
 					referencedAttributes.add(attribute);
 				}
 
@@ -131,13 +133,9 @@ public class SQLConfig extends DBConfig {
 
 		// TODO: Add relations
 		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, referencedEntity));
-
-//		for (Relation relation : ((Entity) entity).getRelations()) {
-//			System.out.println(entity.getName());
-//			System.out.println("getReferencedAttributes: " + relation.getReferencedAttributes());
-//			System.out.println("getReferringAttributes:" + relation.getReferringAttributes());
-//			System.out.println();
-//		}
+		// TODO: TODO^2
+//		System.out.println("referencedEntity: " + (referencedEntity != null ? referencedEntity.getChildren() : null));
+//		System.out.println(entity.getName() + " => RELATIONS: " + ((Entity) entity).getRelations());
 	}
 
 	private void generateTree(DatabaseMetaData metaData) throws SQLException {
