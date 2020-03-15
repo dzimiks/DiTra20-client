@@ -100,7 +100,7 @@ public class Record implements Comparable<Record> {
 			Object valMe = attributes.get(attr);
 			Object valOther = record.getAttributes().get(attr);
 
-			System.out.println("RECORD COMPARE: " + valMe + " => " + valOther);
+//			System.out.println("RECORD COMPARE: " + valMe + " => " + valOther);
 
 			if (!valMe.equals(valOther)) {
 				return false;

@@ -1,6 +1,5 @@
 package src.view.dialog;
 
-
 import src.listeners.desktop.CancelButtonListener;
 import src.models.Attribute;
 import src.models.Entity;
@@ -14,50 +13,44 @@ import src.view.MainView;
 import src.view.table.TabbedView;
 
 import javax.swing.*;
-import java.io.Serializable;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class UpdateDataDialog extends JDialog implements Serializable {
-
+public class DeleteDataDialog extends JDialog {
     private int height = 25;
-    private int width = 100;
-    private int x_left = 20;
-    private int x_right = 130;
-    private int y = 10;
 
     private int size;
     private Entity entity;
     private ArrayList<Node> attributes;
     private Attribute attr;
 
-    private JLabel[] labels;
-    private JLabel[] types;
     private JTextField[] textFields;
     private TabbedView tabbedView;
 
-    public UpdateDataDialog(Entity entity, int size, TabbedView tabbedView) {
+    public DeleteDataDialog(Entity entity, int size, TabbedView tabbedView) {
         this.entity = entity;
         this.size = size;
         this.tabbedView = tabbedView;
         this.attributes = (ArrayList<Node>) entity.getChildren();
         this.attr = new Attribute("Attribute");
 
+
         setLayout(null);
-        setTitle(entity.getName());
-        setSize(500, 700);
+        setTitle("Delete Data");
+        setSize(300, 200);
         setLocationRelativeTo(MainView.getInstance());
+//        this.getContentPane().setBackground(Color.RED);
         initialize();
     }
 
     public void initialize() {
-        this.labels = new JLabel[size];
         this.textFields = new JTextField[size];
-        this.types = new JLabel[size];
 
         String selectedData = "";
 
         int selectedRow = tabbedView.getActivePanel().getTable().getSelectedRow();
         int numberOfColumns = tabbedView.getActivePanel().getTable().getColumnCount();
+
 
         for (int j = 0; j < numberOfColumns; j++) {
             String columnName = tabbedView.getActivePanel().getTable().getColumnName(j);
@@ -67,110 +60,35 @@ public class UpdateDataDialog extends JDialog implements Serializable {
         }
 
         String[] cellValues = selectedData.split(" ");
-//        System.out.println("CellVALUES LENGTH"+ cellValues.length);
-//        for (int i = 0; i < cellValues.length; i++)
-//            System.out.println("CellValue: " + cellValues[i]);
-
 
         for (int i = 0; i < size; i++) {
-
-            this.attr = (Attribute) this.attributes.get(i);
-            this.labels[i] = new JLabel(parseName(attr.getName()));
             this.textFields[i] = new JTextField();
             String cellText = cellValues[i];
 //            System.out.println("Cell text"+cellText);
             this.textFields[i].setText(cellText);
-            this.types[i] = new JLabel(getType(attr));
-
-            this.labels[i].setBounds(x_left, y, width, height);
-            this.textFields[i].setBounds(x_right, y, width, height);
-            this.types[i].setBounds(x_right+120,y,width,height);
-
-            y += 40;
-            add(labels[i]);
-            add(textFields[i]);
-            add(types[i]);
         }
-        Record oldRecord = prepareObjectForUpdate();
-
+        Record recordToDelete = prepareObjectForDeletion();
+        JLabel label = new JLabel("Are you sure you want to delete selected data?");
         JButton btnOk = new JButton("OK");
         JButton btnCancel = new JButton("Cancel");
 
         btnCancel.addActionListener(new CancelButtonListener(this));
         btnOk.addActionListener(actionEvent -> {
-            Record newRecord = prepareObjectForUpdate();
             DatabaseImplementation databaseImplementation = new DatabaseImplementation();
-            databaseImplementation.updateRecord(newRecord,oldRecord);
+            databaseImplementation.deleteRecord(recordToDelete);
             this.setVisible(false);
         });
 
-        btnOk.setBounds(135, y + 50, 50, height);
-        btnCancel.setBounds(195, y + 50, 80, height);
+        label.setBounds(2,50,300,height);
+        btnOk.setBounds(80, 130, 50, height);
+        btnCancel.setBounds(150, 130, 80, height);
 
+        add(label);
         add(btnOk);
         add(btnCancel);
     }
 
-    private String parseName(String name) {
-        int n = name.length();
-        StringBuilder sb = new StringBuilder();
-        sb.append(name.charAt(0));
-
-        for (int i = 1; i < n; i++) {
-            char c = name.charAt(i);
-
-            if (c >= 'A' && c <= 'Z') {
-                c += 32;
-                sb.append(" ");
-            }
-
-            sb.append(c);
-        }
-
-        sb.append(": ");
-        return sb.toString();
-    }
-    private String getType(Attribute attr2) {
-        if (attr2.getValueClass() == VarCharType.class) {
-            if (attr2.isPrimaryKey()) {
-                return "*VarChar (" + attr2.getLength() + ")";
-            }
-
-            return "VarChar (" + attr2.getLength() + ")";
-        }
-        else if (attr2.getValueClass() == CharType.class) {
-            if (attr2.isPrimaryKey()) {
-                return "*Char (" + attr2.getLength() + ")";
-            }
-
-            return "Char (" + attr2.getLength() + ")";
-        }
-        else if (attr2.getValueClass() == DateType.class) {
-            if (attr2.isPrimaryKey()) {
-                return "*Date (" + attr2.getLength() + ")";
-            }
-
-            return "Date (" + attr2.getLength() + ")";
-        }
-        else if (attr2.getValueClass() == Boolean.class) {
-            if (attr2.isPrimaryKey()) {
-                return "*Boolean (" + attr2.getLength() + ")";
-            }
-
-            return "Boolean (" + attr2.getLength() + ")";
-        }
-        else if (attr2.getValueClass() == Integer.class) {
-            if (attr2.isPrimaryKey()) {
-                return "*Numeric (" + attr2.getLength() + ")";
-            }
-
-            return "Numeric (" + attr2.getLength() + ")";
-        }
-
-        return null;
-    }
-
-    public Record prepareObjectForUpdate(){
+    public Record prepareObjectForDeletion(){
         Record record = new Record(entity);
         boolean error = false;
         Attribute attribute = null;

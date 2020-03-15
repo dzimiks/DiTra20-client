@@ -17,8 +17,8 @@ public class AddDataListener implements ActionListener {
         entity = TabbedView.activePanel.getEntity();
         size = TabbedView.activePanel.getEntity().getChildren().size();
 
-        System.out.println(entity.getName());
-        System.out.println(size);
+//        System.out.println(entity.getName());
+//        System.out.println(size);
 
         AddDataDialog addDataDialog = new AddDataDialog(entity, size);
         addDataDialog.setVisible(true);

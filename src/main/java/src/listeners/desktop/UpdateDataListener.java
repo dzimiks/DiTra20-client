@@ -20,8 +20,8 @@ public class UpdateDataListener implements ActionListener {
         entity = TabbedView.activePanel.getEntity();
         size = TabbedView.activePanel.getEntity().getChildren().size();
 
-        System.out.println(entity.getName());
-        System.out.println(size);
+//        System.out.println(entity.getName());
+//        System.out.println(size);
 
         UpdateDataDialog updateDataDialog = new UpdateDataDialog(entity, size,tabbedView);
         updateDataDialog.setVisible(true);

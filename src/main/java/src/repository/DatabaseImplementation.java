@@ -28,123 +28,158 @@ import java.util.List;
  */
 public class DatabaseImplementation implements RepositoryImplementor {
 
-	@Override
-	public long createRecord(Object object) {
-		return 0;
-	}
+    @Override
+    public long createRecord(Object object) {
+        Record newRecord = (Record) object;
 
-	@Override
-	public List<Record> readRecords() throws SQLException {
-		System.out.println("Fetching DB data...");
 
-		Entity entity = TabbedView.activePanel.getEntity();
-		String query = "SELECT * FROM " + entity.getName();
-		List<Record> records = new ArrayList<>();
+        Entity newRecordEntity = newRecord.getEntity();
 
-		System.out.println("\n==========");
-		System.out.println(query);
-		System.out.println("==========\n");
+        ArrayList<Node> newRecordAttributes = (ArrayList) newRecordEntity.getChildren();
+        ArrayList<String> newRecordTextFields = (ArrayList) newRecord.getTextFields();
 
-		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
-		ResultSet resultSet = statement.executeQuery();
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
 
-		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
-			System.err.println("Database and MS out of sync.");
-			return null;
-		}
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(", ");
+        }
 
-		while (resultSet.next()) {
-			Record record = new Record();
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(") VALUES ('");
 
-			for (Node node : entity.getChildren()) {
-				if (node instanceof Attribute) {
-					Object value = resultSet.getObject(node.getName());
+        //TODO check if text is tipe of string(not sure if its posible to be string)
+        for (int i = 0; i < newRecord.getTextFields().size(); i++) {
+            sb.append(newRecord.getTextFields().get(i)).append("', '");
+        }
 
-					if (value instanceof ClobImpl) {
-						record.addObject(clobToString((Clob) value));
-					} else {
-						record.addObject(value);
-					}
-				}
-			}
+        sb.delete(sb.length() - 4, sb.length());
+        sb.append("')");
 
-			TabbedView.activePanel.getTableModel().addRow(record.getData().toArray());
-			records.add(record);
-		}
+        System.out.println("QUERY: " + sb);
 
-		System.out.println("RECORDS: " + records);
-		resultSet.close();
-		statement.close();
-		return records;
-	}
+        try {
+            PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
 
-	@Override
-	public void updateRecord(Object newRecord, Object oldRecord) {
-		Record updatedRecord = (Record)newRecord;
-		Record recordToUpdate = (Record)oldRecord;
+    @Override
+    public List<Record> readRecords() throws SQLException {
+        System.out.println("Fetching DB data...");
 
-		Entity newRecordEntity = updatedRecord.getEntity();
-		Entity oldRecordEntity = recordToUpdate.getEntity();
+        Entity entity = TabbedView.activePanel.getEntity();
+        String query = "SELECT * FROM " + entity.getName();
+        List<Record> records = new ArrayList<>();
 
-		ArrayList<Node> newRecordAttributes = (ArrayList)newRecordEntity.getChildren();
-		ArrayList<String> newRecordTextFields = (ArrayList)updatedRecord.getTextFields();
+//		System.out.println("\n==========");
+//		System.out.println(query);
+//		System.out.println("==========\n");
 
-		ArrayList<Node> oldRecordAttributes = (ArrayList)oldRecordEntity.getChildren();
-		ArrayList<String> oldRecordTextFields = (ArrayList)recordToUpdate.getTextFields();
+        PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
 
-		int i=0;
+        if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
+            System.err.println("Database and MS out of sync.");
+            return null;
+        }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE ").append(newRecordEntity.getName()).append(" SET ");
+        while (resultSet.next()) {
+            Record record = new Record();
 
-		for (Node node : newRecordAttributes) {
-				sb.append(node.getName().toUpperCase()).append(" = '").append(newRecordTextFields.get(i)).append("', ");
-				i++;
-		}
-		sb.delete(sb.length() - 2, sb.length());
-		sb.append(" WHERE ");
-		int j=0;
+            for (Node node : entity.getChildren()) {
+                if (node instanceof Attribute) {
+                    Object value = resultSet.getObject(node.getName());
 
-		for (Node node : oldRecordAttributes) {
-			sb.append(node.getName().toUpperCase()).append(" = '").append(oldRecordTextFields.get(j)).append("' AND ");
-			j++;
-		}
-		sb.delete(sb.length() - 4, sb.length());
+                    if (value instanceof ClobImpl) {
+                        record.addObject(clobToString((Clob) value));
+                    } else {
+                        record.addObject(value);
+                    }
+                }
+            }
 
-		System.out.println("Query: "+ sb);
+            TabbedView.activePanel.getTableModel().addRow(record.getData().toArray());
+            records.add(record);
+        }
 
-		try {
-			PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
-			statement.executeUpdate();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//		System.out.println("RECORDS: " + records);
+        resultSet.close();
+        statement.close();
+        return records;
+    }
 
-	@Override
-	public void deleteRecord(Object object) {
-		System.out.println("delete record");
-	}
+    @Override
+    public void updateRecord(Object newRecord, Object oldRecord) {
+        Record updatedRecord = (Record) newRecord;
+        Record recordToUpdate = (Record) oldRecord;
 
-	private String clobToString(Clob data) {
-		StringBuilder sb = new StringBuilder();
+        Entity newRecordEntity = updatedRecord.getEntity();
+        Entity oldRecordEntity = recordToUpdate.getEntity();
 
-		try {
-			Reader reader = data.getCharacterStream();
-			BufferedReader br = new BufferedReader(reader);
+        ArrayList<Node> newRecordAttributes = (ArrayList) newRecordEntity.getChildren();
+        ArrayList<String> newRecordTextFields = (ArrayList) updatedRecord.getTextFields();
 
-			String line;
+        ArrayList<Node> oldRecordAttributes = (ArrayList) oldRecordEntity.getChildren();
+        ArrayList<String> oldRecordTextFields = (ArrayList) recordToUpdate.getTextFields();
 
-			while (null != (line = br.readLine())) {
-				sb.append(line);
-			}
+        int i = 0;
 
-			br.close();
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ").append(newRecordEntity.getName()).append(" SET ");
 
-		return sb.toString();
-	}
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(newRecordTextFields.get(i)).append("', ");
+            i++;
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(" WHERE ");
+        int j = 0;
+
+        for (Node node : oldRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(oldRecordTextFields.get(j)).append("' AND ");
+            j++;
+        }
+        sb.delete(sb.length() - 4, sb.length());
+
+//		System.out.println("Query: "+ sb);
+
+        try {
+            PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteRecord(Object object) {
+        System.out.println("delete record");
+    }
+
+    private String clobToString(Clob data) {
+        StringBuilder sb = new StringBuilder();
+
+        try {
+            Reader reader = data.getCharacterStream();
+            BufferedReader br = new BufferedReader(reader);
+
+            String line;
+
+            while (null != (line = br.readLine())) {
+                sb.append(line);
+            }
+
+            br.close();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return sb.toString();
+    }
 }

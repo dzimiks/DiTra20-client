@@ -24,7 +24,7 @@ public class ShowTableListener implements ChangeListener {
 		int selectedIndex = selected.getSelectedIndex();
 		String title = selected.getTitleAt(selectedIndex);
 		TreePath treePath = selected.getSelectedEntity().getPath();
-		System.out.println("ShowTableListener: " + treePath);
+//		System.out.println("ShowTableListener: " + treePath);
 
 		MainView.getInstance()
 				.getTreeView()

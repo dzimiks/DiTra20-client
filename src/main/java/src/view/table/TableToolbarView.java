@@ -3,6 +3,7 @@ package src.view.table;
 import src.config.SQLConfig;
 import src.constants.Constants;
 import src.listeners.desktop.AddDataListener;
+import src.listeners.desktop.DeleteDataListener;
 import src.listeners.desktop.FetchDataListener;
 import src.listeners.desktop.UpdateDataListener;
 import src.models.Attribute;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableToolbarView extends JPanel {
-
-	private JButton doAction;
 
 	private JButton dbFetch;
 	private JButton dbAdd;
@@ -55,22 +54,7 @@ public class TableToolbarView extends JPanel {
 
 		this.dbAdd = new JButton("Add");
 		this.dbAdd.setIcon(new ImageIcon(Constants.ADD_ICON));
-		this.dbAdd.addActionListener(event -> {
-			StringBuilder query = new StringBuilder();
-			query.append("INSERT INTO TYPES_OF_INSTITUTIONS (TIP_UST, TIP_NAZIV) VALUES (?, ?)");
-			System.out.println("Query: " + query);
-
-			try {
-				PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query.toString());
-				statement.setString(1, "M");
-				statement.setString(2, "Milane probaj ovo");
-				statement.executeUpdate();
-				statement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		});
-//		this.dbAdd.addActionListener(new AddDataListener());
+		this.dbAdd.addActionListener(new AddDataListener());
 
 		this.dbUpdate = new JButton("Update");
 		this.dbUpdate.setIcon(new ImageIcon(Constants.UPDATE_ICON));
@@ -78,9 +62,7 @@ public class TableToolbarView extends JPanel {
 
 		this.dbDelete = new JButton("Delete");
 		this.dbDelete.setIcon(new ImageIcon(Constants.DELETE_ICON));
-
-		this.doAction = new JButton("Submit");
-		this.doAction.setIcon(new ImageIcon(Constants.SUBMIT_ICON));
+		this.dbDelete.addActionListener(new DeleteDataListener());
 
 		this.dbShowRelations = new JButton("Show relations");
 		this.dbShowRelations.setIcon(new ImageIcon(Constants.RELATIONS_ICON));
@@ -181,7 +163,5 @@ public class TableToolbarView extends JPanel {
 		dbToolbar.add(dbDelete);
 		dbToolbar.addSeparator();
 		dbToolbar.add(dbShowRelations);
-		dbToolbar.addSeparator();
-		dbToolbar.add(doAction);
 	}
 }

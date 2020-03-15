@@ -28,7 +28,7 @@ public class TreeListener implements TreeSelectionListener {
 		if (node instanceof Entity) {
 			Entity entity = (Entity) node;
 			tabbedView.addNewTab(entity);
-			System.out.println("TreeListener - Clicked on " + entity);
+//			System.out.println("TreeListener - Clicked on " + entity);
 
 		}
 	}

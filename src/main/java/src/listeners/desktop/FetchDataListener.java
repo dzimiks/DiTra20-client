@@ -17,7 +17,7 @@ public class FetchDataListener implements ActionListener {
 			TabbedView.activePanel.clearTable();
 			DatabaseImplementation databaseImplementation = new DatabaseImplementation();
 			List<Record> records = databaseImplementation.readRecords();
-			System.out.println("DATA: " + records);
+//			System.out.println("DATA: " + records);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
