@@ -1,6 +1,7 @@
 package src.listeners.tree;
 
 import src.models.Entity;
+import src.models.Relation;
 import src.view.table.TabbedView;
 import src.view.tree.TreeView;
 
@@ -27,9 +28,14 @@ public class TreeListener implements TreeSelectionListener {
 
 		if (node instanceof Entity) {
 			Entity entity = (Entity) node;
+			System.out.println("TreeListener: " + entity + " => " + entity.getRelations());
+
+			for (Relation relation : entity.getRelations()) {
+				System.out.println(">>> TreeListener - getReferencedAttributes: " + relation.getReferencedAttributes());
+			}
+
 			tabbedView.addNewTab(entity);
 //			System.out.println("TreeListener - Clicked on " + entity);
-
 		}
 	}
 }

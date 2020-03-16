@@ -120,21 +120,20 @@ public class RelationPanel extends JPanel {
 		query.delete(query.length() - 5, query.length());
 		System.out.println(">>> Relation Panel query: " + query.toString());
 
-//		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query.toString());
-		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement("SELECT * FROM HIGH_EDUCATION_INSTITUTION");
+		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query.toString());
+//		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement("SELECT * FROM HIGH_EDUCATION_INSTITUTION");
 		ResultSet resultSet = statement.executeQuery();
 
-//		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
-//			System.err.println("Database and MS out of sync.");
-//			return;
-//		}
+		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
+			System.err.println("Database and MS out of sync.");
+			return;
+		}
 
 		while (resultSet.next()) {
 			Record record = new Record();
-			System.out.println(TabbedView.activePanel.getEntity());
 
-			for (Node node : TabbedView.activePanel.getEntity().getChildren()) {
-				System.out.println("*** Node: " + node);
+			// entity.getChildren()
+			for (Node node : entity.getChildren()) {
 
 				if (node instanceof Attribute) {
 					Object value = resultSet.getObject(node.getName());

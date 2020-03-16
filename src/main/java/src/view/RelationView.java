@@ -23,7 +23,9 @@ public class RelationView extends JPanel {
 		this.entity = entity;
 		this.parentInfRes = (InformationResource) entity.getParent();
 		this.relations = entity.getRelations();
+		this.tabbedPane = new JTabbedPane();
 		this.setLayout(new FlowLayout());
+		this.add(tabbedPane);
 	}
 
 	public void addNewDBTab(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {

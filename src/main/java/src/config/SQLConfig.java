@@ -11,7 +11,9 @@ import src.models.tree.NodeFactory;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SQLConfig extends DBConfig {
 
@@ -92,8 +94,10 @@ public class SQLConfig extends DBConfig {
 
 		List<Attribute> referringAttributes = new ArrayList<>();
 		List<Attribute> referencedAttributes = new ArrayList<>();
+		Set<String> seenReferencedEntities = new HashSet<>();
+		String prevEntity = null;
 		Entity referencedEntity = null;
-		int magicCounter = 0;
+		Entity prevReferencedEntity = null;
 
 		// Get all relations between tables
 		while (foreignKeys.next()) {
@@ -107,13 +111,32 @@ public class SQLConfig extends DBConfig {
 
 //			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
 
-			if (magicCounter == 0) {
-				ResultSet allColumnsRelation = metaData.getColumns(null, null, pkTableName, null);
-				referencedEntity = new Entity(pkTableName);
-				getAttributes(allColumnsRelation, referencedEntity);
+			// TODO
+			ResultSet allColumnsRelation = metaData.getColumns(null, null, pkTableName, null);
+			referencedEntity = new Entity(pkTableName);
+			getAttributes(allColumnsRelation, referencedEntity);
+
+			if (prevEntity != null && !prevEntity.equals(pkTableName)) {
+//				System.out.println("NEW NEW NEW " + entity + " ref: " + prevReferencedEntity);
+//				System.out.println("RADI PODRIZE: " + referencedAttributes);
+				((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, prevReferencedEntity));
+
+//				for (Relation relation : ((Entity) entity).getRelations()) {
+//					System.out.println("1. REF ENT: " + relation.getReferencedEntity());
+//					System.out.println("1. OCE MOJ BROJ: " + relation.getName() + " ---> " + relation.getReferencedAttributes());
+//				}
+
+				// TODO: Biggest bug in my life
+//				referringAttributes.clear();
+//				referencedAttributes.clear();
+
+				referringAttributes = new ArrayList<>();
+				referencedAttributes = new ArrayList<>();
 			}
 
-			magicCounter++;
+			prevReferencedEntity = referencedEntity;
+//			System.out.println("prevEntity: " + prevEntity);
+			prevEntity = pkTableName;
 
 			for (Node node : entity.getChildren()) {
 				if (node.getName().equals(pkColumnName)) {
@@ -129,12 +152,30 @@ public class SQLConfig extends DBConfig {
 					referringAttributes.add(attribute);
 				}
 			}
+
+//			System.out.println("=== referringAttributes: " + referringAttributes);
+//			System.out.println("=== referencedAttributes: " + referencedAttributes);
+//			System.out.println("=== referencedEntity: " + referencedEntity);
+
+			// TODO
+			seenReferencedEntities.add(pkTableName);
+//			System.out.println("SET: " + seenReferencedEntities);
 		}
 
-		// TODO: Add relations
-		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, referencedEntity));
-		// TODO: TODO^2
-//		System.out.println("referencedEntity: " + (referencedEntity != null ? referencedEntity.getChildren() : null));
+//		System.out.println("NEW NEW NEW " + entity + " ref: " + prevReferencedEntity);
+//		System.out.println("RADI PODRIZE: " + referencedAttributes);
+//		System.out.println();
+		((Entity) entity).addRelations(new Relation(referringAttributes, referencedAttributes, prevReferencedEntity));
+
+//		for (Relation relation : ((Entity) entity).getRelations()) {
+//			System.out.println("REF ENT: " + relation.getReferencedEntity());
+//			System.out.println("OCE MOJ BROJ: " + relation.getName() + " ---> " + relation.getReferencedAttributes());
+//		}
+//
+//		System.out.println("\n**************************\n");
+//
+//		// TODO: TODO^2
+//		System.out.println("referencedEntity: " + (referencedEntity != null ? referencedEntity.getName() : null));
 //		System.out.println(entity.getName() + " => RELATIONS: " + ((Entity) entity).getRelations());
 	}
 
@@ -149,6 +190,13 @@ public class SQLConfig extends DBConfig {
 			Node entity = NodeFactory.getInstance().getNode("ENT", tableName);
 			getColumns(metaData, entity, tableName);
 
+//			System.out.println("JEDI KURAC: " + entity.getName());
+//			System.out.println("JEDI KURAC 2: " + ((Entity) entity).getRelations());
+
+//			for (Relation relation : ((Entity) entity).getRelations()) {
+//				System.out.println("PODRIG: " + relation.getName() + " ===D " + relation.toString() + " => " + relation.getReferencedAttributes());
+//			}
+
 			// Add node
 			dbName.addChild(entity);
 			tablesCount++;
@@ -159,7 +207,6 @@ public class SQLConfig extends DBConfig {
 		}
 
 		Warehouse.getInstance().addChild(dbName);
-
 		System.out.println("\nFound " + tablesCount + " tables\n");
 	}
 

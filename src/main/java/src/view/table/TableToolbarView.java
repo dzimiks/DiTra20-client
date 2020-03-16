@@ -88,8 +88,6 @@ public class TableToolbarView extends JPanel {
 
 			System.out.println("activeEntity: " + activeEntity);
 			System.out.println("> relations: " + relations);
-			System.out.println("selectedIndex: " + selectedIndex);
-			System.out.println("activePanel.getColumnCount(): " + TabbedView.activePanel.getTable().getColumnCount());
 
 			if (selectedIndex < 0) {
 				JOptionPane.showMessageDialog(
@@ -142,28 +140,28 @@ public class TableToolbarView extends JPanel {
 				}
 
 				// TODO
-				for (int j = 0; j < TabbedView.activePanel.getTable().getModel().getRowCount(); j++) {
-					Record newRecord = new Record(entity);
-					boolean isOkRecord = true;
+//				for (int j = 0; j < TabbedView.activePanel.getTable().getModel().getRowCount(); j++) {
+//					Record newRecord = new Record(entity);
+//					boolean isOkRecord = true;
+//
+//					for (int ind = 0; ind < TabbedView.activePanel.getTable().getColumnCount(); ind++) {
+//						Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(j, ind);
+//						newRecord.addObject(obj);
+//					}
+//
+//					for (int m = 0; m < referencedIndex.size(); m++) {
+//						if (!newRecord.getData().get(referencedIndex.get(m)).equals(currentRecord.getData().get(referringIndex.get(m)))) {
+//							isOkRecord = false;
+//							break;
+//						}
+//					}
+//
+//					if (isOkRecord) {
+//						recordsToShow.add(newRecord);
+//					}
+//				}
 
-					for (int ind = 0; ind < TabbedView.activePanel.getTable().getColumnCount(); ind++) {
-						Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(j, ind);
-						newRecord.addObject(obj);
-					}
-
-					for (int m = 0; m < referencedIndex.size(); m++) {
-						if (!newRecord.getData().get(referencedIndex.get(m)).equals(currentRecord.getData().get(referringIndex.get(m)))) {
-							isOkRecord = false;
-							break;
-						}
-					}
-
-					if (isOkRecord) {
-						recordsToShow.add(newRecord);
-					}
-				}
-
-				System.out.println("recordsToShow: " + recordsToShow);
+//				System.out.println("recordsToShow: " + recordsToShow);
 				System.out.println("referencedEntity: " + referencedEntity);
 				System.out.println("referringAttributes: " + referringAttributes);
 				System.out.println("referencedAttributes: " + referencedAttributes);
