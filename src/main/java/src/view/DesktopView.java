@@ -31,7 +31,7 @@ public class DesktopView extends JPanel {
 		this.treeView = treeView;
 		this.tabbedView = new TabbedView();
 		this.relationView = new RelationView(new Entity("dzimiks"));
-		this.tableToolbarView = new TableToolbarView(null, relationView);
+		this.tableToolbarView = new TableToolbarView(null, relationView, this);
 
 		this.treeController = new TreeController(treeView, tabbedView);
 		this.desktopController = new DesktopController(tabbedView);

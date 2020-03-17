@@ -30,10 +30,9 @@ public class RelationView extends JPanel {
 
 	public void addNewDBTab(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {
 		RelationPanel relationPanel = new RelationPanel(entity, referringAttributes, referencedAttributes);
-		System.out.println("RelationView - relationPanel: " + relationPanel);
-		System.out.println(entity.getName());
+//		System.out.println("RelationView - relationPanel ENT: " + entity.getName());
 
-//		if (relationPanel.getName() == null) {
+//		if (relationPanel == null) {
 //			JOptionPane.showMessageDialog(
 //					new JFrame(),
 //					"RelationPanel is null!",
@@ -44,7 +43,6 @@ public class RelationView extends JPanel {
 //		}
 
 		tabbedPane.addTab(entity.getName(), relationPanel);
-		int index = tabbedPane.getTabCount() - 1;
 		tabbedPane.setSelectedIndex(0);
 		this.revalidate();
 		this.repaint();

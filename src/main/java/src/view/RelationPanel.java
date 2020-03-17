@@ -58,9 +58,6 @@ public class RelationPanel extends JPanel {
 	}
 
 	public RelationPanel(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {
-		System.out.println("RelationPanel constructor: " +
-				entity + " -> " + referringAttributes + " <- " + referencedAttributes);
-
 		this.entity = entity;
 		this.referringAttributes = referringAttributes;
 		this.referencedAttributes = referencedAttributes;
@@ -147,7 +144,7 @@ public class RelationPanel extends JPanel {
 				}
 			}
 
-			System.out.println("RELATION PANEL RECORD: " + record.getData());
+//			System.out.println("RELATION PANEL RECORD: " + record.getData());
 			model.addRow(record.getData().toArray());
 		}
 

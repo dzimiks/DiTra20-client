@@ -34,9 +34,11 @@ public class TableToolbarView extends JPanel {
 
 	private JToolBar dbToolbar;
 	private RelationView relationView;
+	private DesktopView desktopView;
 
-	public TableToolbarView(Entity entity, RelationView relationView) {
+	public TableToolbarView(Entity entity, RelationView relationView, DesktopView desktopView) {
 		this.entity = entity;
+		this.desktopView = desktopView;
 		this.relationView = relationView;
 
 		this.setLayout(new BorderLayout());
@@ -67,7 +69,7 @@ public class TableToolbarView extends JPanel {
 		this.dbShowRelations = new JButton("Show relations");
 		this.dbShowRelations.setIcon(new ImageIcon(Constants.RELATIONS_ICON));
 		this.dbShowRelations.addActionListener(event -> {
-			DesktopView desktopView = MainView.getInstance().getDesktopView();
+			// TODO: Second biggest bug in my life - must give desktopView as a argument
 			desktopView.setRelationView(relationView);
 			desktopView.repaint();
 
@@ -86,8 +88,8 @@ public class TableToolbarView extends JPanel {
 			int selectedIndex = TabbedView.activePanel.getTable().getSelectedRow();
 			Record currentRecord = new Record(entity);
 
-			System.out.println("activeEntity: " + activeEntity);
-			System.out.println("> relations: " + relations);
+//			System.out.println("activeEntity: " + activeEntity);
+//			System.out.println("> relations: " + relations);
 
 			if (selectedIndex < 0) {
 				JOptionPane.showMessageDialog(
@@ -108,63 +110,10 @@ public class TableToolbarView extends JPanel {
 				Entity referencedEntity = relation.getReferencedEntity();
 				List<Attribute> referringAttributes = relation.getReferringAttributes();
 				List<Attribute> referencedAttributes = relation.getReferencedAttributes();
-				List<Integer> referringIndex = new ArrayList<>();
-				List<Integer> referencedIndex = new ArrayList<>();
-				List<Record> recordsToShow = new ArrayList<>();
 
-				for (Attribute referringAttribute : referringAttributes) { // Za svaku relaciju prolazim kroz listu Atributa
-					// po kojima je u vezi sa drugim entitetom
-
-					for (int k = 0; k < activeEntity.getChildCount(); k++) { // Prolazim kroz sve svoje atribute i gledam koji imaju isto
-						// ime kao reffering attribute
-
-						if (((Attribute) activeEntity.getChildAt(k)).getName().equals(referringAttribute.getName())) {
-
-							referringIndex.add(k);
-							//System.out.println("1. Atribut " + ((Attribute)activeEntity.getChildAt(k)).getName() + " Indeks " + j);
-						}
-					}
-				}
-
-				for (Attribute referencedAttribute : referencedAttributes) {
-
-					for (int p = 0; p < referencedEntity.getChildCount(); p++) {
-
-						if (((Attribute) referencedEntity.getChildAt(p)).getName().equals(referencedAttribute.getName())) {
-
-							referencedIndex.add(p);
-							//System.out.println("2. Atribut " + ((Attribute)referencedEntity.getChildAt(p)).getName() + " Indeks " + p);
-						}
-
-					}
-				}
-
-				// TODO
-//				for (int j = 0; j < TabbedView.activePanel.getTable().getModel().getRowCount(); j++) {
-//					Record newRecord = new Record(entity);
-//					boolean isOkRecord = true;
-//
-//					for (int ind = 0; ind < TabbedView.activePanel.getTable().getColumnCount(); ind++) {
-//						Object obj = TabbedView.activePanel.getTable().getModel().getValueAt(j, ind);
-//						newRecord.addObject(obj);
-//					}
-//
-//					for (int m = 0; m < referencedIndex.size(); m++) {
-//						if (!newRecord.getData().get(referencedIndex.get(m)).equals(currentRecord.getData().get(referringIndex.get(m)))) {
-//							isOkRecord = false;
-//							break;
-//						}
-//					}
-//
-//					if (isOkRecord) {
-//						recordsToShow.add(newRecord);
-//					}
-//				}
-
-//				System.out.println("recordsToShow: " + recordsToShow);
-				System.out.println("referencedEntity: " + referencedEntity);
-				System.out.println("referringAttributes: " + referringAttributes);
-				System.out.println("referencedAttributes: " + referencedAttributes);
+//				System.out.println("referencedEntity: " + referencedEntity);
+//				System.out.println("referringAttributes: " + referringAttributes);
+//				System.out.println("referencedAttributes: " + referencedAttributes);
 
 				relationView.addNewDBTab(referencedEntity, referringAttributes, referencedAttributes);
 				desktopView.repaint();
