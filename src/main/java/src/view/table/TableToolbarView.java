@@ -91,6 +91,7 @@ public class TableToolbarView extends JPanel {
 //			System.out.println("activeEntity: " + activeEntity);
 //			System.out.println("> relations: " + relations);
 
+
 			if (selectedIndex < 0) {
 				JOptionPane.showMessageDialog(
 						new JFrame(),
@@ -108,6 +109,7 @@ public class TableToolbarView extends JPanel {
 
 			for (Relation relation : relations) { // Prolazim kroz sve svoje relacije
 				Entity referencedEntity = relation.getReferencedEntity();
+				System.out.println("REFERENCED ENTITY: "+ referencedEntity.getName());
 				List<Attribute> referringAttributes = relation.getReferringAttributes();
 				List<Attribute> referencedAttributes = relation.getReferencedAttributes();
 

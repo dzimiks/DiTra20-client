@@ -44,10 +44,10 @@ public class RelationPanel extends JPanel {
 
 		for (Record r : records) {
 			model.addRow(r.getData().toArray());
-			System.out.println("Ubacujem " + r.getData().toString());
+//			System.out.println("Ubacujem " + r.getData().toString());
 		}
 
-		System.out.println("Ubacio sam sve");
+//		System.out.println("Ubacio sam sve");
 
 		model.fireTableDataChanged();
 		table = new JTable(model);
@@ -58,6 +58,7 @@ public class RelationPanel extends JPanel {
 	}
 
 	public RelationPanel(Entity entity, List<Attribute> referringAttributes, List<Attribute> referencedAttributes) {
+
 		this.entity = entity;
 		this.referringAttributes = referringAttributes;
 		this.referencedAttributes = referencedAttributes;
@@ -86,7 +87,7 @@ public class RelationPanel extends JPanel {
 	}
 
 	private void fetchRecords() throws SQLException {
-		System.out.println("Relation Panel - Fetching DB records...");
+//		System.out.println("Relation Panel - Fetching DB records...");
 
 		while (model.getRowCount() != 0) {
 			model.removeRow(0);
@@ -96,6 +97,7 @@ public class RelationPanel extends JPanel {
 		query.append("SELECT * FROM ").append(entity.getName()).append(" WHERE ");
 
 		int selectedRow = TabbedView.activePanel.getTable().getSelectedRow();
+
 
 		for (Attribute referencedAttribute : referencedAttributes) {
 			int index = 0;

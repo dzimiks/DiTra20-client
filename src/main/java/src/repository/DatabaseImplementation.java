@@ -26,6 +26,8 @@ import java.util.List;
 /**
  * MYSQL database implementation
  */
+
+//TODO Review cases where user leave empty textfields
 public class DatabaseImplementation implements RepositoryImplementor {
 
 	@Override
@@ -69,20 +71,26 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		try {
+			readRecords();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 1;
 	}
 
 	@Override
 	public List<Record> readRecords() throws SQLException {
 		System.out.println("Fetching DB data...");
-
+		TabbedView.activePanel.clearTable();
 		Entity entity = TabbedView.activePanel.getEntity();
+		System.out.println("ENTITY: "+ entity.getName());
 		String query = "SELECT * FROM " + entity.getName();
 		List<Record> records = new ArrayList<>();
 
-		System.out.println("\n==========");
-		System.out.println(query);
-		System.out.println("==========\n");
+//		System.out.println("\n==========");
+//		System.out.println(query);
+//		System.out.println("==========\n");
 
 		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
 		ResultSet resultSet = statement.executeQuery();
@@ -160,6 +168,11 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		try {
+			readRecords();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -168,8 +181,8 @@ public class DatabaseImplementation implements RepositoryImplementor {
         Record recordToDelete = (Record) object;
 
         Entity recordToDeleteEntity = recordToDelete.getEntity();
-        ArrayList<Node> recordToDeleteAttributes = (ArrayList<Node>) recordToDeleteEntity.getChildren();
-        ArrayList<String> recordToDeleteTextFields = (ArrayList<String>) recordToDelete.getTextFields();
+        List<Node> recordToDeleteAttributes = recordToDeleteEntity.getChildren();
+        List<String> recordToDeleteTextFields = recordToDelete.getTextFields();
         StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ").append(recordToDeleteEntity.getName());
 
@@ -192,6 +205,11 @@ public class DatabaseImplementation implements RepositoryImplementor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		try {
+			readRecords();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
 

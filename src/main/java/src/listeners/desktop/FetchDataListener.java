@@ -14,7 +14,7 @@ public class FetchDataListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		try {
-			TabbedView.activePanel.clearTable();
+
 			DatabaseImplementation databaseImplementation = new DatabaseImplementation();
 			List<Record> records = databaseImplementation.readRecords();
 //			System.out.println("DATA: " + records);
