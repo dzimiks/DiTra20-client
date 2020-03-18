@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+//TODO fetch data for foreign keys and put it in combox so client can choose
 public class UpdateDataDialog extends JDialog implements Serializable {
 
     private int height = 25;

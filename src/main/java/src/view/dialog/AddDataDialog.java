@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
+
+
 public class AddDataDialog extends JDialog implements Serializable {
 
 	private int height = 25;

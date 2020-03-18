@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * MYSQL database implementation
  */
-
+//TODO DATE during delete/update wont work
 //TODO Review cases where user leave empty textfields
 public class DatabaseImplementation implements RepositoryImplementor {
 
@@ -50,17 +50,23 @@ public class DatabaseImplementation implements RepositoryImplementor {
 		}
 
 		sb.delete(sb.length() - 2, sb.length());
-		sb.append(") VALUES ('");
+		sb.append(") VALUES (");
 
 
         //TODO check if text is tipe of string(not sure if its posible to be string)
         for (int i = 0; i < newRecord.getTextFields().size(); i++) {
-            sb.append(newRecordTextFields.get(i)).append("', '");
+			System.out.println("TEXTFIELD TEXT: "+ newRecordTextFields.get(i));
+        	if(newRecordTextFields.get(i).equals("")){
+        		sb.append("'null'").append(",");
+			}else{
+				sb.append("'").append(newRecordTextFields.get(i)).append("',");
+			}
+
         }
 
 
-		sb.delete(sb.length() - 4, sb.length());
-		sb.append("')");
+		sb.delete(sb.length() - 1, sb.length());
+		sb.append(")");
 
 		System.out.println("QUERY: " + sb);
 
@@ -169,6 +175,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
 			e.printStackTrace();
 		}
 		try {
+
 			readRecords();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -191,7 +198,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
         int i = 0;
 
         for (Node node : recordToDeleteAttributes) {
-            sb.append(node.getName().toUpperCase()).append(" LIKE '").append(recordToDeleteTextFields.get(i)).append("%' AND ");
+            sb.append(node.getName().toUpperCase()).append(" LIKE '").append(recordToDeleteTextFields.get(i).equals("null" ) ? "":recordToDeleteTextFields.get(i)+"%").append("' AND ");
             i++;
         }
         sb.delete(sb.length() - 5, sb.length());
