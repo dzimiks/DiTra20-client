@@ -14,6 +14,7 @@ public class MainView extends JFrame {
 	private static MainView instance = null;
 
 	private ToolbarView toolbarView;
+	private MenuBarView menuBarView;
 	private TreeView treeView;
 	private DesktopView desktopView;
 
@@ -36,6 +37,7 @@ public class MainView extends JFrame {
 		// Initialize view
 		this.treeView = new TreeView();
 		this.toolbarView = new ToolbarView(treeView);
+		this.menuBarView = new MenuBarView(treeView);
 		this.desktopView = new DesktopView(treeView);
 
 		JScrollPane scrollPane = new JScrollPane(treeView);
@@ -45,6 +47,7 @@ public class MainView extends JFrame {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, desktopView);
 		splitPane.setDividerLocation(300);
 
+		this.setJMenuBar(menuBarView);
 		this.add(toolbarView, BorderLayout.PAGE_START);
 		this.add(splitPane, BorderLayout.CENTER);
 	}
