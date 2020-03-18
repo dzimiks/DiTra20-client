@@ -190,13 +190,6 @@ public class SQLConfig extends DBConfig {
 			Node entity = NodeFactory.getInstance().getNode("ENT", tableName);
 			getColumns(metaData, entity, tableName);
 
-//			System.out.println("JEDI KURAC: " + entity.getName());
-//			System.out.println("JEDI KURAC 2: " + ((Entity) entity).getRelations());
-
-//			for (Relation relation : ((Entity) entity).getRelations()) {
-//				System.out.println("PODRIG: " + relation.getName() + " ===D " + relation.toString() + " => " + relation.getReferencedAttributes());
-//			}
-
 			// Add node
 			dbName.addChild(entity);
 			tablesCount++;
