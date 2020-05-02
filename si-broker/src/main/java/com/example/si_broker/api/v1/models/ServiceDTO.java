@@ -1,5 +1,6 @@
 package com.example.si_broker.api.v1.models;
 
+import com.example.si_broker.domain.Role;
 import lombok.Data;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public class ServiceDTO {
     private String name;
     private String route;
     private String httpMethod;
-    private Map<String, List<String>> endpointAndRoles;
+    private Map<String, List<Role>> endpointAndRoles;
 }

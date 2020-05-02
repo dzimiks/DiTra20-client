@@ -1,5 +1,6 @@
 package com.example.si_broker.domain;
 
+import lombok.Data;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,6 +8,7 @@ import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Document(collection = "users")
 public class User {
 
@@ -23,8 +25,6 @@ public class User {
     private String password;
 
     private String email;
-
-    private Role role;
 
     private List<Role> roles = new ArrayList<>();
 
@@ -74,14 +74,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public List<Role> getRoles() {

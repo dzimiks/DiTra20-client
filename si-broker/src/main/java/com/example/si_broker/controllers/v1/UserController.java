@@ -29,21 +29,25 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO user) {
         return new ResponseEntity<>(userService.addUser(user), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH}, value = "/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @RequestBody UserDTO user) {
         return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<Boolean> deleteUserByID(@PathVariable String id) {
         return new ResponseEntity<>(userService.deleteUserByID(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, value = "/find")
     public ResponseEntity<UserDTO> getUserByID(@RequestParam(value = "id") String id) {
         return new ResponseEntity<>(userService.getUserByID(id), HttpStatus.OK);

@@ -24,8 +24,7 @@ public class ServiceDomain {
 
     private String httpMethod;
 
-    // TODO: 2.5.20. value treba da bude lista rola, promeni kad vanja doda role
-    private Map<String, List<String>> endpointAndRoles = new HashMap<>();
+    private Map<String, List<Role>> endpointAndRoles = new HashMap<>();
 
     public String getId() {
         return id;
@@ -59,11 +58,11 @@ public class ServiceDomain {
         this.httpMethod = httpMethod;
     }
 
-    public Map<String, List<String>> getEndpointAndRoles() {
+    public Map<String, List<Role>> getEndpointAndRoles() {
         return endpointAndRoles;
     }
 
-    public void setEndpointAndRoles(Map<String, List<String>> endpointAndRoles) {
+    public void setEndpointAndRoles(Map<String, List<Role>> endpointAndRoles) {
         this.endpointAndRoles = endpointAndRoles;
     }
 }

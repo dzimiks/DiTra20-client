@@ -1,13 +1,13 @@
 package com.example.si_broker.bootstrap;
 
-import com.example.si_broker.domain.ServiceDomain;
+import com.example.si_broker.domain.Provider;
 import com.example.si_broker.domain.Role;
+import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.domain.User;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +52,6 @@ public class Bootstrap implements CommandLineRunner {
         user1.setUsername("123");
         user1.setPassword(bCryptPasswordEncoder.encode("123"));
         user1.setEmail("123@gmail.com");
-        user1.setRole(Role.ROLE_USER);
         user1.getRoles().add(Role.ROLE_USER);
 
         User user2 = new User();
@@ -62,8 +61,8 @@ public class Bootstrap implements CommandLineRunner {
         user2.setUsername("dzimiks");
         user2.setPassword(bCryptPasswordEncoder.encode("dzimiks"));
         user2.setEmail("vana997@gmail.com");
-        user2.setRole(Role.ROLE_ADMIN);
         user2.getRoles().add(Role.ROLE_ADMIN);
+        user2.getRoles().add(Role.ROLE_USER);
 
         User user3 = new User();
         user3.setId(UUID.randomUUID().toString());
@@ -72,24 +71,33 @@ public class Bootstrap implements CommandLineRunner {
         user3.setUsername("miki");
         user3.setPassword(bCryptPasswordEncoder.encode("milan"));
         user3.setEmail("tkemi@gmail.com");
-        user3.setRole(Role.ROLE_ADMIN);
         user3.getRoles().add(Role.ROLE_ADMIN);
+
+        Provider provider1 = new Provider();
+        provider1.setId(UUID.randomUUID().toString());
+        provider1.setFirstName("Aleksa");
+        provider1.setLastName("Aleksic");
+        provider1.setUsername("alexa");
+        provider1.setPassword(bCryptPasswordEncoder.encode("alexa"));
+        provider1.setEmail("alexa@gmail.com");
+        provider1.getRoles().add(Role.ROLE_PROVIDER);
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(provider1);
 
         ServiceDomain serviceDomain1 = new ServiceDomain();
         serviceDomain1.setId(UUID.randomUUID().toString());
         serviceDomain1.setName("ThreadPool");
         serviceDomain1.setRoute("localhost:8081/MikiMilan/baza");
         serviceDomain1.setHttpMethod("POST");
-        List<String> role = new ArrayList<>();
-        role.add("executor");
-        role.add("Miha");
+        List<Role> role = new ArrayList<>();
+        role.add(Role.ROLE_USER);
+        role.add(Role.ROLE_ADMIN);
         serviceDomain1.getEndpointAndRoles().put("/endpoint", role);
 
         serviceRepository.save(serviceDomain1);
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
 
         System.out.println("Services loaded: " + serviceRepository.count());
         System.out.println("Users loaded: " + userRepository.count());
