@@ -1,22 +1,28 @@
 package com.example.si_broker.bootstrap;
 
+import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.domain.User;
+import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
 
     private UserRepository userRepository;
+    private ServiceRepository serviceRepository;
 
     @Autowired
-    public Bootstrap(UserRepository userRepository) {
+    public Bootstrap(UserRepository userRepository, ServiceRepository serviceRepository) {
         this.userRepository = userRepository;
+        this.serviceRepository = serviceRepository;
     }
 
     @Override
@@ -52,11 +58,23 @@ public class Bootstrap implements CommandLineRunner {
         user3.setEmail("tkemi@gmail.com");
         user3.setRole("admin");
 
+        ServiceDomain serviceDomain1= new ServiceDomain();
+        serviceDomain1.setId(UUID.randomUUID().toString());
+        serviceDomain1.setName("MikiMilan");
+        serviceDomain1.setRoute("localhost:8081/MikiMilan/baza");
+        serviceDomain1.setHttpMethod("POST");
+        List<String> role = new ArrayList();
+        role.add("Dzimiks");
+        role.add("Miha");
+        serviceDomain1.getEndpointAndRoles().put("/endpoint",role);
+
+        serviceRepository.save(serviceDomain1);
         // TODO: insert()
 //        userRepository.save(user1);
 //        userRepository.save(user2);
 //        userRepository.save(user3);
 
+        System.out.println("Services loaded: "+ serviceRepository.count());
         System.out.println("Users loaded: " + userRepository.count());
     }
 }

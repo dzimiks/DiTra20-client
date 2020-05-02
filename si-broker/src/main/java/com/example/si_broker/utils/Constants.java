@@ -18,4 +18,5 @@ public class Constants {
     public static final int MONGO_DB_PORT = 27017;
 
     public static final String USERS_BASE_URL = "/api/v1/users";
+    public static final String SERVICES_BASE_URL = "/api/vi/services";
 }
