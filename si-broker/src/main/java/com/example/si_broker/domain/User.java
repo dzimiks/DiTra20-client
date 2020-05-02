@@ -1,8 +1,11 @@
 package com.example.si_broker.domain;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "users")
 public class User {
@@ -14,13 +17,16 @@ public class User {
 
     private String lastName;
 
+//    @Indexed(unique = true)
     private String username;
 
     private String password;
 
     private String email;
 
-    private String role;
+    private Role role;
+
+    private List<Role> roles = new ArrayList<>();
 
     public void setId(String id) {
         this.id = id;
@@ -70,11 +76,19 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

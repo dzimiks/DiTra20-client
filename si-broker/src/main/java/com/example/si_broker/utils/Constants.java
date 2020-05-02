@@ -1,6 +1,7 @@
 package com.example.si_broker.utils;
 
 public class Constants {
+
     /**
      * DB Utils
      */
@@ -19,4 +20,12 @@ public class Constants {
 
     public static final String USERS_BASE_URL = "/api/v1/users";
     public static final String SERVICES_BASE_URL = "/api/vi/services";
+
+    /**
+     * JWT
+     */
+    public static final String SECRET_KEY = "SISecretKeyForJWT";
+    public static final String HEADER_STRING = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final long EXPIRATION_TIME = 86400;
 }
