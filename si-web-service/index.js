@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -10,6 +11,20 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const mainRouter = require('./routes');
 
 const app = express();
+
+const mysql = require('mysql');
+
+app.use((req, res, next) => {
+  res.locals.connection = mysql.createConnection({
+    host: process.env.SQL_HOST,
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DB_NAME
+  });
+  res.locals.connection.connect();
+  console.log('Connected to SQL database...');
+  next();
+});
 
 app.set('port', PORT);
 app.set('env', NODE_ENV);
