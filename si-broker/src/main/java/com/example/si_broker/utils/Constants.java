@@ -16,4 +16,6 @@ public class Constants {
     public static final String MONGO_DB_NAME = "tim_403_2_broker_si2019";
     public static final String MONGO_DB_PASSWORD = "8B#9#g@E!Vz=?wyV";
     public static final int MONGO_DB_PORT = 27017;
+
+    public static final String USERS_BASE_URL = "/api/v1/users";
 }
