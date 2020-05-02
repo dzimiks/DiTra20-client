@@ -11,6 +11,7 @@ public class ServiceDTO {
     private String id;
     private String name;
     private String route;
+    private Integer port;
     private String httpMethod;
     private Map<String, List<Role>> endpointAndRoles;
 }

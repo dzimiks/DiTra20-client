@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @Document(collection = "services")
@@ -19,12 +20,11 @@ public class ServiceDomain {
 
     private String route;
 
-    // TODO: 2.5.20. Mozda ne treba jer ruta ukljucuje port
-//    private String port;
+    private Integer port;
 
     private String httpMethod;
 
-    private Map<String, List<Role>> endpointAndRoles = new HashMap<>();
+    private Map<String, Set<Role>> endpointAndRoles = new HashMap<>();
 
     public String getId() {
         return id;
@@ -58,11 +58,11 @@ public class ServiceDomain {
         this.httpMethod = httpMethod;
     }
 
-    public Map<String, List<Role>> getEndpointAndRoles() {
+    public Map<String, Set<Role>> getEndpointAndRoles() {
         return endpointAndRoles;
     }
 
-    public void setEndpointAndRoles(Map<String, List<Role>> endpointAndRoles) {
+    public void setEndpointAndRoles(Map<String, Set<Role>> endpointAndRoles) {
         this.endpointAndRoles = endpointAndRoles;
     }
 }

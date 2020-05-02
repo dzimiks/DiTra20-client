@@ -2,6 +2,7 @@ package com.example.si_broker.services.impl;
 
 import com.example.si_broker.api.v1.mappers.ServiceMapper;
 import com.example.si_broker.api.v1.models.ServiceDTO;
+import com.example.si_broker.domain.Role;
 import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.domain.User;
 import com.example.si_broker.repositories.ServiceRepository;
@@ -9,8 +10,7 @@ import com.example.si_broker.services.ServiceAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,8 +67,66 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
         return serviceMapper.serviceToServiceDTO(serviceDomain.get());
     }
 
+    @Override
+    public ServiceDTO addServiceEndpoint(ServiceDTO serviceDTO, Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+
+        if (optionalServiceDomain.isEmpty()) {
+            return null;
+        }
+        ServiceDomain serviceDomain = optionalServiceDomain.get();
+        for(String endpoint:endpointAndRoles.keySet()){
+            serviceDomain.getEndpointAndRoles().put(endpoint,endpointAndRoles.get(endpoint));
+        }
+
+        return saveAndReturnDTO(serviceDomain);
+    }
+
+    @Override
+    public ServiceDTO updateServiceEndpoint(ServiceDTO serviceDTO,Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+
+        if (optionalServiceDomain.isEmpty()) {
+            return null;
+        }
+        ServiceDomain serviceDomain = optionalServiceDomain.get();
+        Map<String, Set<Role>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
+
+        for(String endpoint:existingMapInServiceDomain.keySet()){
+            for(String newEndpoint:endpointAndRoles.keySet()){
+                if(endpoint.equals(newEndpoint)){
+                    for(Role role:endpointAndRoles.get(endpoint)){
+                        existingMapInServiceDomain.get(endpoint).add(role);
+                    }
+                }else{
+                    existingMapInServiceDomain.put(newEndpoint,endpointAndRoles.get(newEndpoint));
+                }
+            }
+        }
+
+        return saveAndReturnDTO(serviceDomain);
+    }
+
+    @Override
+    public ServiceDTO deleteServiceEndpoint(ServiceDTO serviceDTO, Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+
+        if (optionalServiceDomain.isEmpty()) {
+            return null;
+        }
+        ServiceDomain serviceDomain = optionalServiceDomain.get();
+
+        for(String endpoint:endpointAndRoles.keySet()){
+            serviceDomain.getEndpointAndRoles().remove(endpoint,endpointAndRoles.get(endpoint));
+        }
+
+        return saveAndReturnDTO(serviceDomain);
+    }
+
     private ServiceDTO saveAndReturnDTO(ServiceDomain service) {
         serviceRepository.save(service);
         return serviceMapper.serviceToServiceDTO(service);
     }
+
+
 }
