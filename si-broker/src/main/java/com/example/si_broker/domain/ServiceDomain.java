@@ -1,5 +1,6 @@
 package com.example.si_broker.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 

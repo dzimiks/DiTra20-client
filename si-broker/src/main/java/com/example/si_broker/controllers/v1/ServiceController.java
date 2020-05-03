@@ -6,6 +6,7 @@ import com.example.si_broker.services.ServiceAPIService;
 import com.example.si_broker.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -59,20 +60,20 @@ public class ServiceController {
 
     @PreAuthorize("hasRole('ROLE_PROVIDER')")
     @RequestMapping(method = RequestMethod.POST, value = "/updateEndpoint/{id}")
-    public ResponseEntity<ServiceDTO> addServiceEndpoint(@RequestParam String id, @RequestBody Map<String, Set<Role>>endpointAndRole){
+    public ResponseEntity<ServiceDTO> addServiceEndpoint(@PathVariable String id, @RequestBody Map<String, Set<Role>>endpointAndRole){
         return new ResponseEntity<>(serviceAPIService.addServiceEndpoint(id,endpointAndRole),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_PROVIDER')")
     @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH}, value = "/updateEndpoint/{id}")
-    public ResponseEntity<ServiceDTO> updateServiceEndpoint(@RequestParam String id, @RequestBody Map<String,Set<Role>> endpointAndRole){
+    public ResponseEntity<ServiceDTO> updateServiceEndpoint(@PathVariable String id, @RequestBody Map<String,Set<Role>> endpointAndRole){
         return new ResponseEntity<>(serviceAPIService.updateServiceEndpoint(id,endpointAndRole),HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_PROVIDER')")
     @RequestMapping(method = RequestMethod.DELETE, value = "/updateEndpoint/{id}")
-    public ResponseEntity<ServiceDTO> deleteServiceEndpoint(@RequestParam String id, @RequestBody Map<String,Set<Role>> endpointAndRole){
-        return new ResponseEntity<>(serviceAPIService.deleteServiceEndpoint(id,endpointAndRole),HttpStatus.OK);
+    public ResponseEntity<ServiceDTO> deleteServiceEndpoint(@PathVariable String id, @RequestBody String endpoint){
+        return new ResponseEntity<>(serviceAPIService.deleteServiceEndpoint(id,endpoint),HttpStatus.OK);
     }
 
 }

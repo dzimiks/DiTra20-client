@@ -22,7 +22,7 @@ public interface ServiceAPIService {
 
     ServiceDTO updateServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
 
-    ServiceDTO deleteServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO deleteServiceEndpoint(String id,String endpoint);
 
 
 }
