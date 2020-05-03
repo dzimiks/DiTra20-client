@@ -1,8 +1,8 @@
 package com.example.si_broker.api.v1.models;
 
+import com.example.si_broker.domain.Role;
 import lombok.Data;
-
-import javax.management.relation.Role;
+import java.util.List;
 
 @Data
 public class UserDTO {
@@ -12,5 +12,5 @@ public class UserDTO {
     private String username;
     private String password;
     private String email;
-    private Role role;
+    private List<Role> roles;
 }

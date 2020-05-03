@@ -15,7 +15,7 @@ public interface UserMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "email", target = "email")
-    @Mapping(source = "role", target = "role")
+    @Mapping(source = "roles", target = "roles")
     UserDTO userToUserDTO(User user);
 
     @Mapping(source = "firstName", target = "firstName")
@@ -23,6 +23,6 @@ public interface UserMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "email", target = "email")
-    @Mapping(source = "role", target = "role")
+    @Mapping(source = "roles", target = "roles")
     User userDTOtoUser(UserDTO userDTO);
 }

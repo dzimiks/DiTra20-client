@@ -4,7 +4,6 @@ import com.example.si_broker.api.v1.mappers.ServiceMapper;
 import com.example.si_broker.api.v1.models.ServiceDTO;
 import com.example.si_broker.domain.Role;
 import com.example.si_broker.domain.ServiceDomain;
-import com.example.si_broker.domain.User;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.services.ServiceAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +67,8 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
     }
 
     @Override
-    public ServiceDTO addServiceEndpoint(ServiceDTO serviceDTO, Map<String, Set<Role>> endpointAndRoles) {
-        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+    public ServiceDTO addServiceEndpoint(String id, Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(id);
 
         if (optionalServiceDomain.isEmpty()) {
             return null;
@@ -83,8 +82,8 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
     }
 
     @Override
-    public ServiceDTO updateServiceEndpoint(ServiceDTO serviceDTO,Map<String, Set<Role>> endpointAndRoles) {
-        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+    public ServiceDTO updateServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(id);
 
         if (optionalServiceDomain.isEmpty()) {
             return null;
@@ -108,8 +107,8 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
     }
 
     @Override
-    public ServiceDTO deleteServiceEndpoint(ServiceDTO serviceDTO, Map<String, Set<Role>> endpointAndRoles) {
-        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(serviceDTO.getId());
+    public ServiceDTO deleteServiceEndpoint(String id, Map<String, Set<Role>> endpointAndRoles) {
+        Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(id);
 
         if (optionalServiceDomain.isEmpty()) {
             return null;
@@ -127,6 +126,5 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
         serviceRepository.save(service);
         return serviceMapper.serviceToServiceDTO(service);
     }
-
 
 }

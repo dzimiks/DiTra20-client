@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +23,8 @@ public class ServiceDomain {
     private Integer port;
 
     private String httpMethod;
+
+    private Set<Role> roles = new HashSet<>();
 
     private Map<String, Set<Role>> endpointAndRoles = new HashMap<>();
 

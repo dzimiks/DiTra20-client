@@ -1,9 +1,6 @@
 package com.example.si_broker.bootstrap;
 
-import com.example.si_broker.domain.Provider;
-import com.example.si_broker.domain.Role;
-import com.example.si_broker.domain.ServiceDomain;
-import com.example.si_broker.domain.User;
+import com.example.si_broker.domain.*;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -52,7 +47,7 @@ public class Bootstrap implements CommandLineRunner {
         user1.setUsername("123");
         user1.setPassword(bCryptPasswordEncoder.encode("123"));
         user1.setEmail("123@gmail.com");
-        user1.getRoles().add(Role.ROLE_USER);
+        user1.getRoles().add(new Role(RoleType.ROLE_ADMIN));
 
         User user2 = new User();
         user2.setId(UUID.randomUUID().toString());
@@ -61,8 +56,8 @@ public class Bootstrap implements CommandLineRunner {
         user2.setUsername("dzimiks");
         user2.setPassword(bCryptPasswordEncoder.encode("dzimiks"));
         user2.setEmail("vana997@gmail.com");
-        user2.getRoles().add(Role.ROLE_ADMIN);
-        user2.getRoles().add(Role.ROLE_USER);
+        user2.getRoles().add(new Role(RoleType.ROLE_ADMIN));
+        user2.getRoles().add(new Role(RoleType.ROLE_USER));
 
         User user3 = new User();
         user3.setId(UUID.randomUUID().toString());
@@ -71,7 +66,7 @@ public class Bootstrap implements CommandLineRunner {
         user3.setUsername("miki");
         user3.setPassword(bCryptPasswordEncoder.encode("milan"));
         user3.setEmail("tkemi@gmail.com");
-        user3.getRoles().add(Role.ROLE_ADMIN);
+        user3.getRoles().add(new Role(RoleType.ROLE_ADMIN));
 
         Provider provider1 = new Provider();
         provider1.setId(UUID.randomUUID().toString());
@@ -80,7 +75,7 @@ public class Bootstrap implements CommandLineRunner {
         provider1.setUsername("alexa");
         provider1.setPassword(bCryptPasswordEncoder.encode("alexa"));
         provider1.setEmail("alexa@gmail.com");
-        provider1.getRoles().add(Role.ROLE_PROVIDER);
+        provider1.getRoles().add(new Role(RoleType.ROLE_PROVIDER));
 
         userRepository.save(user1);
         userRepository.save(user2);
@@ -92,9 +87,10 @@ public class Bootstrap implements CommandLineRunner {
         serviceDomain1.setName("ThreadPool");
         serviceDomain1.setRoute("localhost:8081/MikiMilan/baza");
         serviceDomain1.setHttpMethod("POST");
-        List<Role> role = new ArrayList<>();
-        role.add(Role.ROLE_USER);
-        role.add(Role.ROLE_ADMIN);
+        Set<Role> role = new HashSet<>();
+        role.add(new Role(RoleType.ROLE_USER));
+        role.add(new Role(RoleType.ROLE_ADMIN));
+        serviceDomain1.setRoles(role);
         serviceDomain1.getEndpointAndRoles().put("/endpoint", role);
 
         serviceRepository.save(serviceDomain1);

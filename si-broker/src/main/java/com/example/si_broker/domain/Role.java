@@ -3,8 +3,6 @@ package com.example.si_broker.domain;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Data
@@ -14,4 +12,8 @@ public class Role {
     private String id;
 
     private RoleType name;
+
+    public Role(RoleType name){
+        this.name = name;
+    }
 }

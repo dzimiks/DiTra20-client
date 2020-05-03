@@ -18,11 +18,11 @@ public interface ServiceAPIService {
 
     ServiceDTO getServiceById(String id);
 
-    ServiceDTO addServiceEndpoint(ServiceDTO serviceDTO,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO addServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
 
-    ServiceDTO updateServiceEndpoint(ServiceDTO serviceDTO,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO updateServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
 
-    ServiceDTO deleteServiceEndpoint(ServiceDTO serviceDTO,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO deleteServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
 
 
 }
