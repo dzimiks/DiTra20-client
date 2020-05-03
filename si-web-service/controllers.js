@@ -90,6 +90,9 @@ module.exports.tablesInsert = (req, res) => {
 //     "value": {
 //         "TIP_UST": "TT",
 //         "TIP_NAZIV": "Energy"
+//     },
+//     "condition": {
+//     	   "TIP_UST": "PK"
 //     }
 // }
 //
