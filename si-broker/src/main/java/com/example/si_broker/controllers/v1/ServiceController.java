@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(Constants.SERVICES_BASE_URL)
+@RequestMapping(Constants.SERVICES_BASE_URL+"/registerUpdateService")
 public class ServiceController {
 
     private ServiceAPIService serviceAPIService;

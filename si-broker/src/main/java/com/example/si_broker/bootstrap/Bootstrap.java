@@ -84,8 +84,9 @@ public class Bootstrap implements CommandLineRunner {
 
         ServiceDomain serviceDomain1 = new ServiceDomain();
         serviceDomain1.setId(UUID.randomUUID().toString());
-        serviceDomain1.setName("ThreadPool");
-        serviceDomain1.setRoute("localhost:8081/MikiMilan/baza");
+        serviceDomain1.setName("sql-service");
+        System.out.println("localhost:8080/dodajRecordUBazu");
+        serviceDomain1.setRoute("localhost:8081/sql-service/baza");
         serviceDomain1.setHttpMethod("POST");
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_USER));
