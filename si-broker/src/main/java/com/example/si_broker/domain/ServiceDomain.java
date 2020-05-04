@@ -1,6 +1,5 @@
 package com.example.si_broker.domain;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,7 +26,7 @@ public class ServiceDomain {
 
     private Set<Role> roles = new HashSet<>();
 
-    private Map<String, Set<Role>> endpointAndRoles = new HashMap<>();
+    private Map<String, Map<String, Object>> endpointAndRoles = new HashMap<>();
 
     public String getId() {
         return id;
@@ -61,11 +60,11 @@ public class ServiceDomain {
         this.httpMethod = httpMethod;
     }
 
-    public Map<String, Set<Role>> getEndpointAndRoles() {
+    public Map<String, Map<String, Object>> getEndpointAndRoles() {
         return endpointAndRoles;
     }
 
-    public void setEndpointAndRoles(Map<String, Set<Role>> endpointAndRoles) {
+    public void setEndpointAndRoles(Map<String, Map<String, Object>> endpointAndRoles) {
         this.endpointAndRoles = endpointAndRoles;
     }
 }

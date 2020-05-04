@@ -87,11 +87,16 @@ public class Bootstrap implements CommandLineRunner {
         serviceDomain1.setName("ThreadPool");
         serviceDomain1.setRoute("localhost:8081/MikiMilan/baza");
         serviceDomain1.setHttpMethod("POST");
-        Set<Role> role = new HashSet<>();
-        role.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_USER));
-        role.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
-        serviceDomain1.setRoles(role);
-        serviceDomain1.getEndpointAndRoles().put("/endpoint", role);
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_USER));
+        roles.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
+        serviceDomain1.setRoles(roles);
+
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("roles", roles);
+        objectMap.put("method", "POST");
+
+        serviceDomain1.getEndpointAndRoles().put("/endpoint", objectMap);
 
         serviceRepository.save(serviceDomain1);
 

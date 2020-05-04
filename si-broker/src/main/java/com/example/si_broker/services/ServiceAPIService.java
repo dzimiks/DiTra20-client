@@ -1,11 +1,9 @@
 package com.example.si_broker.services;
 
 import com.example.si_broker.api.v1.models.ServiceDTO;
-import com.example.si_broker.domain.Role;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface ServiceAPIService {
     List<ServiceDTO> getAllServices();
@@ -18,11 +16,9 @@ public interface ServiceAPIService {
 
     ServiceDTO getServiceById(String id);
 
-    ServiceDTO addServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO addServiceEndpoint(String id, Map<String, Map<String, Object>> endpointAndRoles);
 
-    ServiceDTO updateServiceEndpoint(String id,Map<String, Set<Role>> endpointAndRoles);
+    ServiceDTO updateServiceEndpoint(String id, Map<String, Map<String, Object>> endpointAndRoles);
 
-    ServiceDTO deleteServiceEndpoint(String id,String endpoint);
-
-
+    ServiceDTO deleteServiceEndpoint(String id, String endpoint);
 }

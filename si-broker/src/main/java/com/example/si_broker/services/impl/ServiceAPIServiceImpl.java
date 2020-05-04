@@ -67,45 +67,44 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
     }
 
     @Override
-    public ServiceDTO addServiceEndpoint(String id, Map<String, Set<Role>> endpointAndRoles) {
+    public ServiceDTO addServiceEndpoint(String id, Map<String, Map<String, Object>> endpointAndRoles) {
         Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(id);
 
         if (optionalServiceDomain.isEmpty()) {
             return null;
         }
+
         ServiceDomain serviceDomain = optionalServiceDomain.get();
-        Map<String, Set<Role>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
+        Map<String, Map<String, Object>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
 
         for (String newEndpoint : endpointAndRoles.keySet()) {
-            Set<Role> roleSet = new HashSet<>(endpointAndRoles.get(newEndpoint));
-            existingMapInServiceDomain.put(newEndpoint, roleSet);
+            if (!existingMapInServiceDomain.containsKey(newEndpoint)) {
+                Map<String, Object> object = new HashMap<>(endpointAndRoles.get(newEndpoint));
+                existingMapInServiceDomain.put(newEndpoint, object);
+            } else {
+                System.err.println("Endpoint " + newEndpoint + " already exist!");
+            }
         }
 
         serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
 
         return saveAndReturnDTO(serviceDomain);
-
     }
 
     @Override
-    public ServiceDTO updateServiceEndpoint(String id, Map<String, Set<Role>> endpointAndRoles) {
+    public ServiceDTO updateServiceEndpoint(String id, Map<String, Map<String, Object>> endpointAndRoles) {
         Optional<ServiceDomain> optionalServiceDomain = serviceRepository.findById(id);
-
 
         if (optionalServiceDomain.isEmpty()) {
             return null;
         }
 
         ServiceDomain serviceDomain = optionalServiceDomain.get();
-        Map<String, Set<Role>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
+        Map<String, Map<String, Object>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
 
-
-        for (String endpoint : existingMapInServiceDomain.keySet()) {
-            for (String newEndpoint : endpointAndRoles.keySet()) {
-                for (Role role : endpointAndRoles.get(endpoint)) {
-                    existingMapInServiceDomain.get(newEndpoint).add(role);
-                }
-            }
+        for (String newEndpoint : existingMapInServiceDomain.keySet()) {
+            Map<String, Object> object = new HashMap<>(endpointAndRoles.get(newEndpoint));
+            existingMapInServiceDomain.put(newEndpoint, object);
         }
 
         serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
@@ -123,10 +122,9 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
         }
 
         ServiceDomain serviceDomain = optionalServiceDomain.get();
-        Map<String, Set<Role>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
+        Map<String, Map<String, Object>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
 
         existingMapInServiceDomain.remove(endpoint);
-
         serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
 
         return saveAndReturnDTO(serviceDomain);
@@ -136,5 +134,4 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
         serviceRepository.save(service);
         return serviceMapper.serviceToServiceDTO(service);
     }
-
 }
