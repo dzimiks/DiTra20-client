@@ -145,7 +145,7 @@ public class Bootstrap implements CommandLineRunner {
         complexService1.setHttpMethod("GET");
         List<ServiceDomain> serviceDomainList = new ArrayList<>();
         serviceDomainList.add(serviceDomain1);
-        serviceDomainList.add(serviceDomain2);
+//        serviceDomainList.add(serviceDomain2);
         complexService1.setRoles(roles2);
         complexService1.setServiceDomainList(serviceDomainList);
 

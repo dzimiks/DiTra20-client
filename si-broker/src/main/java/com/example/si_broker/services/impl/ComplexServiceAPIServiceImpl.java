@@ -5,6 +5,7 @@ import com.example.si_broker.api.v1.mappers.ServiceMapper;
 import com.example.si_broker.api.v1.models.ComplexServiceDTO;
 import com.example.si_broker.api.v1.models.ServiceDTO;
 import com.example.si_broker.domain.ComplexService;
+import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.repositories.ComplexServiceRepository;
 import com.example.si_broker.services.ComplexServiceAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,12 +76,12 @@ public class ComplexServiceAPIServiceImpl implements ComplexServiceAPIService {
 
         ComplexService complexService = optionalComplexService.get();
 
-        complexService.getServiceDomainList().remove(serviceMapper.serviceDTOtoService(serviceDTO));
+        complexService.getServiceDomainList().add(serviceMapper.serviceDTOtoService(serviceDTO));
         return saveAndReturnDTO(complexService);
     }
 
     @Override
-    public ComplexServiceDTO deleteService(String id,ServiceDTO serviceDTO) {
+    public ComplexServiceDTO deleteService(String id,String serviceId) {
         Optional<ComplexService> optionalComplexService = complexServiceRepository.findById(id);
 
         if (optionalComplexService.isEmpty()) {
@@ -89,7 +90,7 @@ public class ComplexServiceAPIServiceImpl implements ComplexServiceAPIService {
 
         ComplexService complexService = optionalComplexService.get();
 
-        complexService.getServiceDomainList().remove(serviceMapper.serviceDTOtoService(serviceDTO));
+        complexService.getServiceDomainList().removeIf(serviceDomain -> serviceDomain.getId().equals(serviceId));
 
         return saveAndReturnDTO(complexService);
     }

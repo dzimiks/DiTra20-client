@@ -19,7 +19,7 @@ public interface ComplexServiceAPIService {
 
     ComplexServiceDTO addService(String id,ServiceDTO serviceDTO);
 
-    ComplexServiceDTO deleteService(String id,ServiceDTO serviceDTO);
+    ComplexServiceDTO deleteService(String id,String serviceId);
 
     ComplexServiceDTO getComplexServiceById(String id);
 

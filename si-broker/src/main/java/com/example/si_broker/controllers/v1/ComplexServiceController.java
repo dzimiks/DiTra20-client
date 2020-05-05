@@ -65,9 +65,9 @@ public class ComplexServiceController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_PROVIDER')")
-    @RequestMapping(method = RequestMethod.POST, value = "/deleteService")
-    public ResponseEntity<ComplexServiceDTO> deleteService(@RequestParam String id,@RequestBody ServiceDTO serviceDTO){
-        return new ResponseEntity<>(complexServiceAPIService.deleteService(id,serviceDTO), HttpStatus.OK);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteService")
+    public ResponseEntity<ComplexServiceDTO> deleteService(@RequestParam String id,@RequestParam String serviceId){
+        return new ResponseEntity<>(complexServiceAPIService.deleteService(id,serviceId), HttpStatus.OK);
     }
 
 }
