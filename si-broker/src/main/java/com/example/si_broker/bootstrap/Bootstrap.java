@@ -40,6 +40,11 @@ public class Bootstrap implements CommandLineRunner {
         System.out.println("Users are deleted!");
         System.out.println("Services are deleted!");
 
+        generateUsers();
+        generateServicesAndEndpoints();
+    }
+
+    private void generateUsers() {
         User user1 = new User();
         user1.setId(UUID.randomUUID().toString());
         user1.setFirstName("first name");
@@ -47,7 +52,7 @@ public class Bootstrap implements CommandLineRunner {
         user1.setUsername("123");
         user1.setPassword(bCryptPasswordEncoder.encode("123"));
         user1.setEmail("123@gmail.com");
-        user1.getRoles().add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
+        user1.getRoles().add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
 
         User user2 = new User();
         user2.setId(UUID.randomUUID().toString());
@@ -56,8 +61,8 @@ public class Bootstrap implements CommandLineRunner {
         user2.setUsername("dzimiks");
         user2.setPassword(bCryptPasswordEncoder.encode("dzimiks"));
         user2.setEmail("vana997@gmail.com");
-        user2.getRoles().add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
-        user2.getRoles().add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_USER));
+        user2.getRoles().add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
+        user2.getRoles().add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_USER));
 
         User user3 = new User();
         user3.setId(UUID.randomUUID().toString());
@@ -66,7 +71,7 @@ public class Bootstrap implements CommandLineRunner {
         user3.setUsername("miki");
         user3.setPassword(bCryptPasswordEncoder.encode("milan"));
         user3.setEmail("tkemi@gmail.com");
-        user3.getRoles().add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
+        user3.getRoles().add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
 
         Provider provider1 = new Provider();
         provider1.setId(UUID.randomUUID().toString());
@@ -75,33 +80,57 @@ public class Bootstrap implements CommandLineRunner {
         provider1.setUsername("alexa");
         provider1.setPassword(bCryptPasswordEncoder.encode("alexa"));
         provider1.setEmail("alexa@gmail.com");
-        provider1.getRoles().add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_PROVIDER));
+        provider1.getRoles().add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_PROVIDER));
 
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(provider1);
 
+        System.out.println("Users loaded: " + userRepository.count());
+    }
+
+    private void generateServicesAndEndpoints() {
         ServiceDomain serviceDomain1 = new ServiceDomain();
         serviceDomain1.setId(UUID.randomUUID().toString());
         serviceDomain1.setName("sql-service");
-        System.out.println("localhost:8080/dodajRecordUBazu");
-        serviceDomain1.setRoute("localhost:8081/sql-service/baza");
+        serviceDomain1.setPort(8081);
+//        serviceDomain1.setRoute("localhost:8081/sql-service/baza");
+        serviceDomain1.setRoute("localhost");
         serviceDomain1.setHttpMethod("POST");
+
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_USER));
-        roles.add(new Role(UUID.randomUUID().toString(),RoleType.ROLE_ADMIN));
+        roles.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_USER));
+        roles.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
         serviceDomain1.setRoles(roles);
 
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("roles", roles);
         objectMap.put("method", "POST");
 
-        serviceDomain1.getEndpointAndRoles().put("/endpoint", objectMap);
+        serviceDomain1.getEndpointAndRoles().put("/", objectMap);
+        serviceDomain1.getEndpointAndRoles().put("/select", objectMap);
+
+        ServiceDomain serviceDomain2 = new ServiceDomain();
+        serviceDomain2.setId(UUID.randomUUID().toString());
+        serviceDomain2.setName("crud");
+        serviceDomain2.setPort(8082);
+        serviceDomain2.setRoute("localhost");
+        serviceDomain2.setHttpMethod("GET");
+
+        Set<Role> roles2 = new HashSet<>();
+        roles2.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_USER));
+        serviceDomain2.setRoles(roles2);
+
+        Map<String, Object> objectMap2 = new HashMap<>();
+        objectMap2.put("roles", roles2);
+        objectMap2.put("method", "GET");
+
+        serviceDomain2.getEndpointAndRoles().put("/search", objectMap2);
 
         serviceRepository.save(serviceDomain1);
+        serviceRepository.save(serviceDomain2);
 
         System.out.println("Services loaded: " + serviceRepository.count());
-        System.out.println("Users loaded: " + userRepository.count());
     }
 }

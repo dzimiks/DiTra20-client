@@ -19,7 +19,7 @@ public class User {
 
     private String lastName;
 
-//    @Indexed(unique = true)
+    //    @Indexed(unique = true)
     private String username;
 
     private String password;
@@ -27,7 +27,6 @@ public class User {
     private String email;
 
     private List<Role> roles = new ArrayList<>();
-
 
     public void setId(String id) {
         this.id = id;

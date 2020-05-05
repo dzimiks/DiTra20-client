@@ -16,15 +16,18 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class MyUserDetails implements UserDetails {
+
     private static final long serialVersionUID = 1L;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String id;
 
     @Setter
     private String username;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String email;
 
     @JsonIgnore
@@ -43,7 +46,8 @@ public class MyUserDetails implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities);
+                authorities
+        );
     }
 
     @Override

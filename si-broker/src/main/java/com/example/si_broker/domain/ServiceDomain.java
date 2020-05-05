@@ -67,4 +67,20 @@ public class ServiceDomain {
     public void setEndpointAndRoles(Map<String, Map<String, Object>> endpointAndRoles) {
         this.endpointAndRoles = endpointAndRoles;
     }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 }
