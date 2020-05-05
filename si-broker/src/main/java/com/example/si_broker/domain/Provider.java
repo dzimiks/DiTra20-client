@@ -10,7 +10,6 @@ public class Provider extends User {
     private String host;
     private Integer port;
 
-
     public String getHost() {
         return host;
     }

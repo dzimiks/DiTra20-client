@@ -2,14 +2,16 @@ package com.example.si_broker.services.impl;
 
 import com.example.si_broker.api.v1.mappers.ServiceMapper;
 import com.example.si_broker.api.v1.models.ServiceDTO;
-import com.example.si_broker.domain.Role;
 import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.services.ServiceAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

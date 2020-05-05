@@ -1,12 +1,16 @@
 package com.example.si_broker.controllers.v1;
 
 import com.example.si_broker.api.v1.models.ServiceDTO;
+import com.example.si_broker.domain.ComplexServiceDomain;
+import com.example.si_broker.domain.ComplexServiceType;
 import com.example.si_broker.services.ServiceAPIService;
 import com.example.si_broker.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +40,33 @@ public class ServiceController {
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_PROVIDER')")
     @RequestMapping(method = RequestMethod.POST, value = "/addService")
     public ResponseEntity<ServiceDTO> addService(@RequestBody ServiceDTO serviceDTO) {
+        if (serviceDTO.getType() != null) {
+            ComplexServiceDomain complexService = serviceDTOtoComplexService(serviceDTO);
+            UsernamePasswordAuthenticationToken securityContextHolder = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            String username = securityContextHolder.getName();
+
+            Map<String, Map<String, Object>> serviceEndpointAndRoles = complexService.getEndpointAndRoles();
+
+            for (String newEndpoint : serviceEndpointAndRoles.keySet()) {
+                if (serviceEndpointAndRoles.get(newEndpoint).containsKey("type")) {
+                    Map<String, Object> map = serviceEndpointAndRoles.get(newEndpoint);
+                    ComplexServiceType type = ComplexServiceType.valueOf((String) map.get("type"));
+
+                    switch (type) {
+                        case ENDPOINT:
+                            break;
+                        case CATEGORY:
+                            break;
+                        case FUNCTION:
+                            break;
+                        default:
+                            System.err.println("Error: Type " + type + " doesn't exists!");
+                            break;
+                    }
+                }
+            }
+        }
+
         return new ResponseEntity<>(serviceAPIService.addService(serviceDTO), HttpStatus.OK);
     }
 
@@ -73,5 +104,18 @@ public class ServiceController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/updateEndpoint")
     public ResponseEntity<ServiceDTO> deleteServiceEndpoint(@RequestParam String id, @RequestBody String endpoint) {
         return new ResponseEntity<>(serviceAPIService.deleteServiceEndpoint(id, endpoint), HttpStatus.OK);
+    }
+
+    private ComplexServiceDomain serviceDTOtoComplexService(ServiceDTO serviceDTO) {
+        ComplexServiceDomain complexService = new ComplexServiceDomain();
+        complexService.setId(serviceDTO.getId());
+        complexService.setName(serviceDTO.getName());
+        complexService.setRoute(serviceDTO.getRoute());
+        complexService.setPort(serviceDTO.getPort());
+        complexService.setHttpMethod(serviceDTO.getHttpMethod());
+        complexService.setType(serviceDTO.getType());
+        complexService.setRoles(serviceDTO.getRoles());
+        complexService.setEndpointAndRoles(serviceDTO.getEndpointAndRoles());
+        return complexService;
     }
 }

@@ -14,6 +14,7 @@ public interface ServiceMapper {
     @Mapping(source = "route", target = "route")
     @Mapping(source = "port", target = "port")
     @Mapping(source = "httpMethod", target = "httpMethod")
+    @Mapping(source = "roles", target = "roles")
     @Mapping(source = "endpointAndRoles", target = "endpointAndRoles")
     ServiceDTO serviceToServiceDTO(ServiceDomain service);
 
@@ -21,6 +22,7 @@ public interface ServiceMapper {
     @Mapping(source = "route", target = "route")
     @Mapping(source = "port", target = "port")
     @Mapping(source = "httpMethod", target = "httpMethod")
+    @Mapping(source = "roles", target = "roles")
     @Mapping(source = "endpointAndRoles", target = "endpointAndRoles")
     ServiceDomain serviceDTOtoService(ServiceDTO serviceDTO);
 

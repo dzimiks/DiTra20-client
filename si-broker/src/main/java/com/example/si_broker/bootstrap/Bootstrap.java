@@ -128,8 +128,28 @@ public class Bootstrap implements CommandLineRunner {
 
         serviceDomain2.getEndpointAndRoles().put("/search", objectMap2);
 
+        ComplexServiceDomain serviceDomain3 = new ComplexServiceDomain();
+        serviceDomain3.setId(UUID.randomUUID().toString());
+        serviceDomain3.setName("test");
+        serviceDomain3.setPort(8083);
+        serviceDomain3.setRoute("localhost");
+        serviceDomain3.setHttpMethod("GET");
+
+        Set<Role> roles3 = new HashSet<>();
+        roles3.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
+        serviceDomain3.setRoles(roles3);
+
+        Map<String, Object> objectMap3 = new HashMap<>();
+        objectMap3.put("roles", roles3);
+        objectMap3.put("method", "GET");
+        objectMap3.put("type", ComplexServiceType.ENDPOINT);
+
+        serviceDomain3.getEndpointAndRoles().put("/", objectMap3);
+        serviceDomain3.getEndpointAndRoles().put("/test", objectMap3);
+
         serviceRepository.save(serviceDomain1);
         serviceRepository.save(serviceDomain2);
+        serviceRepository.save(serviceDomain3);
 
         System.out.println("Services loaded: " + serviceRepository.count());
     }
