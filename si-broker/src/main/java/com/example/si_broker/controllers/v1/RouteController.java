@@ -9,14 +9,16 @@ import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import com.example.si_broker.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +39,7 @@ public class RouteController {
     RoleRepository roleRepository;
 
     @RequestMapping("/**")
-    public ResponseEntity<Object> findServiceForUser(HttpServletRequest request) {
+    public ResponseEntity<Object> findServiceForUser(HttpServletRequest request) throws IOException {
         UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) request.getUserPrincipal();
         UsernamePasswordAuthenticationToken securityContextHolder = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
@@ -90,8 +92,8 @@ public class RouteController {
 
             for (GrantedAuthority authority : userDetails.getAuthorities()) {
                 System.out.println("AUTHORITY: " + authority.getAuthority());
-                Optional<Role> role = roleRepository.findByName(RoleType.valueOf(authority.getAuthority()));
-
+//                Optional<Role> role = roleRepository.findByName(RoleType.valueOf(authority.getAuthority()));
+//
 //                if (role.isEmpty()) {
 //                    return ResponseEntity.badRequest().body("Error: Role " + authority.getAuthority() + " doesn't exists!");
 //                }
@@ -110,10 +112,31 @@ public class RouteController {
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);
             }
 
+            // TODO: Which URL should be valid?
             String url = "http://" + service.getRoute() + ":" + service.getPort() + route;
             System.out.println("URL: " + url);
+
+            if (request.getMethod().equals("POST")) {
+                String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                System.out.println(body);
+
+                RestTemplate restTemplate = new RestTemplate();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.setAccessControlAllowOrigin("this is dum dum");
+                HttpEntity<String> entity = new HttpEntity<>(body, headers);
+
+                // TODO: Error is here!
+                String response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class).getBody();
+
+                if (response != null) {
+                    return ResponseEntity.ok().body(response);
+                }
+
+                return ResponseEntity.badRequest().body("Error: Failed to get a response from service.");
+            }
         }
 
-        return null;
+        return ResponseEntity.ok().build();
     }
 }

@@ -119,7 +119,7 @@ public class Bootstrap implements CommandLineRunner {
         serviceDomain2.setHttpMethod("GET");
 
         Set<Role> roles2 = new HashSet<>();
-        roles2.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_USER));
+        roles2.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
         serviceDomain2.setRoles(roles2);
 
         Map<String, Object> objectMap2 = new HashMap<>();
