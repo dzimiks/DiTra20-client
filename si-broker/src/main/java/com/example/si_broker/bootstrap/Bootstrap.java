@@ -1,6 +1,7 @@
 package com.example.si_broker.bootstrap;
 
 import com.example.si_broker.domain.*;
+import com.example.si_broker.repositories.ComplexServiceRepository;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,20 @@ public class Bootstrap implements CommandLineRunner {
 
     private UserRepository userRepository;
     private ServiceRepository serviceRepository;
+    private ComplexServiceRepository complexServiceRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public Bootstrap(
             UserRepository userRepository,
             ServiceRepository serviceRepository,
+            ComplexServiceRepository complexServiceRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
+        this.complexServiceRepository = complexServiceRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+
     }
 
     @Override
@@ -36,6 +41,7 @@ public class Bootstrap implements CommandLineRunner {
         // TODO: Run to delete all users
         serviceRepository.deleteAll();
         userRepository.deleteAll();
+        complexServiceRepository.deleteAll();
 
         System.out.println("Users are deleted!");
         System.out.println("Services are deleted!");
@@ -113,9 +119,9 @@ public class Bootstrap implements CommandLineRunner {
 
         ServiceDomain serviceDomain2 = new ServiceDomain();
         serviceDomain2.setId(UUID.randomUUID().toString());
-        serviceDomain2.setName("crud");
-        serviceDomain2.setPort(8082);
-        serviceDomain2.setRoute("localhost");
+        serviceDomain2.setName("sqlWebService");
+        serviceDomain2.setPort(3000);
+        serviceDomain2.setRoute("/tables");
         serviceDomain2.setHttpMethod("GET");
 
         Set<Role> roles2 = new HashSet<>();
@@ -126,30 +132,27 @@ public class Bootstrap implements CommandLineRunner {
         objectMap2.put("roles", roles2);
         objectMap2.put("method", "GET");
 
-        serviceDomain2.getEndpointAndRoles().put("/search", objectMap2);
+        serviceDomain2.getEndpointAndRoles().put("/select", objectMap2);
+        serviceDomain2.getEndpointAndRoles().put("/delete", objectMap2);
+        serviceDomain2.getEndpointAndRoles().put("/insert", objectMap2);
+        serviceDomain2.getEndpointAndRoles().put("/update", objectMap2);
 
-        ComplexServiceDomain serviceDomain3 = new ComplexServiceDomain();
-        serviceDomain3.setId(UUID.randomUUID().toString());
-        serviceDomain3.setName("test");
-        serviceDomain3.setPort(8083);
-        serviceDomain3.setRoute("localhost");
-        serviceDomain3.setHttpMethod("GET");
+        ComplexService complexService1 = new ComplexService();
+        complexService1.setId(UUID.randomUUID().toString());
+        complexService1.setName("complexService");
+        complexService1.setPort(3030);
+        complexService1.setRoute("/complexService1");
+        complexService1.setHttpMethod("GET");
+        List<ServiceDomain> serviceDomainList = new ArrayList<>();
+        serviceDomainList.add(serviceDomain1);
+        serviceDomainList.add(serviceDomain2);
+        complexService1.setRoles(roles2);
+        complexService1.setServiceDomainList(serviceDomainList);
 
-        Set<Role> roles3 = new HashSet<>();
-        roles3.add(new Role(UUID.randomUUID().toString(), RoleType.ROLE_ADMIN));
-        serviceDomain3.setRoles(roles3);
-
-        Map<String, Object> objectMap3 = new HashMap<>();
-        objectMap3.put("roles", roles3);
-        objectMap3.put("method", "GET");
-        objectMap3.put("type", ComplexServiceType.ENDPOINT);
-
-        serviceDomain3.getEndpointAndRoles().put("/", objectMap3);
-        serviceDomain3.getEndpointAndRoles().put("/test", objectMap3);
 
         serviceRepository.save(serviceDomain1);
         serviceRepository.save(serviceDomain2);
-        serviceRepository.save(serviceDomain3);
+        complexServiceRepository.save(complexService1);
 
         System.out.println("Services loaded: " + serviceRepository.count());
     }

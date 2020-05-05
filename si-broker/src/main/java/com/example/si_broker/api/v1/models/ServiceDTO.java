@@ -1,6 +1,5 @@
 package com.example.si_broker.api.v1.models;
 
-import com.example.si_broker.domain.ComplexServiceType;
 import com.example.si_broker.domain.Role;
 import lombok.Data;
 
@@ -15,7 +14,6 @@ public class ServiceDTO {
     private String route;
     private Integer port;
     private String httpMethod;
-    private ComplexServiceType type;
     private Set<Role> roles;
     private Map<String, Map<String, Object>> endpointAndRoles;
 
@@ -57,14 +55,6 @@ public class ServiceDTO {
 
     public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
-    }
-
-    public ComplexServiceType getType() {
-        return type;
-    }
-
-    public void setType(ComplexServiceType type) {
-        this.type = type;
     }
 
     public Set<Role> getRoles() {

@@ -1,5 +1,6 @@
 package com.example.si_broker.domain;
 
+import com.example.si_broker.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;

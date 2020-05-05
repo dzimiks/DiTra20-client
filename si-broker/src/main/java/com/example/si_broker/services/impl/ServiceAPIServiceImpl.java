@@ -88,8 +88,6 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
             }
         }
 
-        serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
-
         return saveAndReturnDTO(serviceDomain);
     }
 
@@ -109,8 +107,6 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
             existingMapInServiceDomain.put(newEndpoint, object);
         }
 
-        serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
-
         return saveAndReturnDTO(serviceDomain);
     }
 
@@ -127,7 +123,6 @@ public class ServiceAPIServiceImpl implements ServiceAPIService {
         Map<String, Map<String, Object>> existingMapInServiceDomain = serviceDomain.getEndpointAndRoles();
 
         existingMapInServiceDomain.remove(endpoint);
-        serviceDomain.setEndpointAndRoles(existingMapInServiceDomain);
 
         return saveAndReturnDTO(serviceDomain);
     }
