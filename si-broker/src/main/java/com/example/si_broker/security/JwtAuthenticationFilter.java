@@ -37,6 +37,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             com.example.si_broker.domain.User credentials = new ObjectMapper()
                     .readValue(req.getInputStream(), com.example.si_broker.domain.User.class);
 
+            System.out.println("CREDS: " + credentials);
+
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             credentials.getUsername(),
@@ -61,6 +63,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + Constants.EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(Constants.SECRET_KEY.getBytes()));
 
+        System.out.println("successfulAuthentication: TOKEN: " + token);
+
         res.addHeader(Constants.HEADER_STRING, Constants.TOKEN_PREFIX + token);
+        chain.doFilter(req, res);
     }
 }
