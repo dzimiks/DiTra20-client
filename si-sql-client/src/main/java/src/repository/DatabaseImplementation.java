@@ -33,14 +33,10 @@ public class DatabaseImplementation implements RepositoryImplementor {
     @Override
     public long createRecord(Object object) {
         Record newRecord = (Record) object;
-
-
         Entity newRecordEntity = newRecord.getEntity();
-
 
         List<Node> newRecordAttributes = newRecordEntity.getChildren();
         List<String> newRecordTextFields = newRecord.getTextFields();
-
 
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
@@ -52,8 +48,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
         sb.delete(sb.length() - 2, sb.length());
         sb.append(") VALUES (");
 
-
-        //TODO check if text is tipe of string(not sure if its posible to be string)
+        // TODO check if text is type of string (not sure if it's possible to be string)
         for (int i = 0; i < newRecord.getTextFields().size(); i++) {
             System.out.println("TEXTFIELD TEXT: " + newRecordTextFields.get(i));
             if (newRecordTextFields.get(i).equals("")) {
@@ -61,9 +56,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
             } else {
                 sb.append("'").append(newRecordTextFields.get(i)).append("',");
             }
-
         }
-
 
         sb.delete(sb.length() - 1, sb.length());
         sb.append(")");
@@ -77,6 +70,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         try {
             readRecords();
         } catch (SQLException e) {
@@ -174,8 +168,8 @@ public class DatabaseImplementation implements RepositoryImplementor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
 
+        try {
             readRecords();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -211,6 +205,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         try {
             readRecords();
         } catch (SQLException e) {

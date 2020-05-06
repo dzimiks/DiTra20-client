@@ -27,7 +27,56 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
 
     @Override
     public long createRecord(Object object) {
-        return 0;
+        Record newRecord = (Record) object;
+        Entity newRecordEntity = newRecord.getEntity();
+
+        List<Node> newRecordAttributes = newRecordEntity.getChildren();
+        List<String> newRecordTextFields = newRecord.getTextFields();
+
+        Map<String, String> value = new HashMap<>();
+        List<String> keys = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
+
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(", ");
+            keys.add(node.getName().toUpperCase());
+        }
+
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(") VALUES (");
+
+        // TODO check if text is type of string (not sure if it's possible to be string)
+        for (int i = 0; i < newRecord.getTextFields().size(); i++) {
+            System.out.println("TEXTFIELD TEXT: " + newRecordTextFields.get(i));
+            if (newRecordTextFields.get(i).equals("")) {
+                sb.append("'null'").append(",");
+            } else {
+                sb.append("'").append(newRecordTextFields.get(i)).append("',");
+                values.add(newRecordTextFields.get(i));
+            }
+        }
+
+        sb.delete(sb.length() - 1, sb.length());
+        sb.append(")");
+
+        System.out.println("QUERY: " + sb);
+
+        for (int i = 0; i < keys.size(); i++) {
+            value.put(keys.get(i), values.get(i));
+        }
+
+        System.out.println("VALUE MAP: " + value);
+        sendSQLInsertRequest(newRecordEntity.getName(), value);
+
+        try {
+            readRecords();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1;
     }
 
     @Override
@@ -155,6 +204,60 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
 
         try {
             URL url = new URL(Constants.BROKER_URL + "/services/sql-service/delete");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setRequestProperty("Authorization", "Bearer " + token);
+            connection.setDoOutput(true);
+
+            // TODO
+            Gson gson = new Gson();
+            JsonElement jsonElement = gson.toJsonTree(value);
+            JsonObject json = new JsonObject();
+            json.addProperty("tableName", tableName);
+            json.add("value", jsonElement);
+
+            String jsonInput = json.toString();
+            System.out.println("JSON input: " + jsonInput);
+
+            OutputStream os = connection.getOutputStream();
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+
+            System.out.println("Broker response " + response.toString());
+            return response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    private String sendSQLInsertRequest(String tableName, Map<String, String> value) {
+        HttpURLConnection connection = null;
+
+        String token = sendLoginRequest();
+        System.out.println("TOKEN: " + token);
+
+        if (token == null) {
+            System.err.println("[sendSQLDeleteRequest]: Token is null!!!");
+            return null;
+        }
+
+        try {
+            URL url = new URL(Constants.BROKER_URL + "/services/sql-service/insert");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
