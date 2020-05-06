@@ -152,14 +152,12 @@ public class RouteController {
                 context.setComplexServiceParameters(parameters);
                 ServiceRunnerState serviceRunnerState = new ServiceRunnerState();
                 context.setState(serviceRunnerState);
-                serviceRunnerState.execute(context);
+                context.execute();
             }
         }
 
 
         return ResponseEntity.ok().build();
 
-        // TODO: 5.5.20. Ako je kompleksni servis, postaviti state complexServiceState
-        // TODO: 5.5.20. Ukoliko je servis koji se poziva kompleksi, treba uraditi proveru da li user koji je poslao zahtev, moze da pristupi tom servisu
     }
 }
