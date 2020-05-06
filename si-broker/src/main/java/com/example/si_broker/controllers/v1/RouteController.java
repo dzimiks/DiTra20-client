@@ -1,13 +1,13 @@
 package com.example.si_broker.controllers.v1;
 
-import com.example.si_broker.domain.MyUserDetails;
-import com.example.si_broker.domain.Role;
-import com.example.si_broker.domain.RoleType;
-import com.example.si_broker.domain.ServiceDomain;
+import com.example.si_broker.domain.*;
+import com.example.si_broker.repositories.ComplexServiceRepository;
 import com.example.si_broker.repositories.RoleRepository;
 
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
+import com.example.si_broker.state.Context;
+import com.example.si_broker.state.ServiceRunnerState;
 import com.example.si_broker.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -31,6 +31,9 @@ public class RouteController {
 
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    ComplexServiceRepository complexServiceRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -71,6 +74,7 @@ public class RouteController {
         System.out.println("Route: " + route);
 
         Optional<ServiceDomain> serviceDomain = serviceRepository.findByName(serviceName);
+        Optional<ComplexService> complexService = complexServiceRepository.findByName(serviceName);
         // TODO: Add complex service
 
         if (serviceDomain.isEmpty()) {
@@ -137,6 +141,25 @@ public class RouteController {
             }
         }
 
+        if(!complexService.isEmpty()){
+            ComplexService cs = complexService.get();
+            String parameters = request.getQueryString();
+
+            Context context = new Context();
+
+            for(ServiceDomain sd:cs.getServiceDomainList()){
+                context.setServiceDomain(sd);
+                context.setComplexServiceParameters(parameters);
+                ServiceRunnerState serviceRunnerState = new ServiceRunnerState();
+                context.setState(serviceRunnerState);
+                serviceRunnerState.execute(context);
+            }
+        }
+
+
         return ResponseEntity.ok().build();
+
+        // TODO: 5.5.20. Ako je kompleksni servis, postaviti state complexServiceState
+        // TODO: 5.5.20. Ukoliko je servis koji se poziva kompleksi, treba uraditi proveru da li user koji je poslao zahtev, moze da pristupi tom servisu
     }
 }
