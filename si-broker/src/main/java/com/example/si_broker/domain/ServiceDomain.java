@@ -1,7 +1,9 @@
 package com.example.si_broker.domain;
 
 import lombok.Data;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.Id;
 import java.util.HashMap;
