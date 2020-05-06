@@ -30,163 +30,162 @@ import java.util.List;
 //TODO Review cases where user leave empty textfields
 public class DatabaseImplementation implements RepositoryImplementor {
 
-	@Override
-	public long createRecord(Object object) {
-		Record newRecord = (Record) object;
+    @Override
+    public long createRecord(Object object) {
+        Record newRecord = (Record) object;
 
 
-		Entity newRecordEntity = newRecord.getEntity();
+        Entity newRecordEntity = newRecord.getEntity();
 
 
-		List<Node> newRecordAttributes = newRecordEntity.getChildren();
+        List<Node> newRecordAttributes = newRecordEntity.getChildren();
         List<String> newRecordTextFields = newRecord.getTextFields();
 
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ").append(newRecordEntity.getName()).append(" (");
 
-		for (Node node : newRecordAttributes) {
-			sb.append(node.getName().toUpperCase()).append(", ");
-		}
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(", ");
+        }
 
-		sb.delete(sb.length() - 2, sb.length());
-		sb.append(") VALUES (");
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(") VALUES (");
 
 
         //TODO check if text is tipe of string(not sure if its posible to be string)
         for (int i = 0; i < newRecord.getTextFields().size(); i++) {
-			System.out.println("TEXTFIELD TEXT: "+ newRecordTextFields.get(i));
-        	if(newRecordTextFields.get(i).equals("")){
-        		sb.append("'null'").append(",");
-			}else{
-				sb.append("'").append(newRecordTextFields.get(i)).append("',");
-			}
+            System.out.println("TEXTFIELD TEXT: " + newRecordTextFields.get(i));
+            if (newRecordTextFields.get(i).equals("")) {
+                sb.append("'null'").append(",");
+            } else {
+                sb.append("'").append(newRecordTextFields.get(i)).append("',");
+            }
 
         }
 
 
-		sb.delete(sb.length() - 1, sb.length());
-		sb.append(")");
+        sb.delete(sb.length() - 1, sb.length());
+        sb.append(")");
 
-		System.out.println("QUERY: " + sb);
+        System.out.println("QUERY: " + sb);
 
-		try {
-			PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
-			statement.executeUpdate();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		try {
-			readRecords();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return 1;
-	}
+        try {
+            PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            readRecords();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
 
-	@Override
-	public List<Record> readRecords() throws SQLException {
-		System.out.println("Fetching DB data...");
-		TabbedView.activePanel.clearTable();
-		Entity entity = TabbedView.activePanel.getEntity();
-		System.out.println("ENTITY: "+ entity.getName());
-		String query = "SELECT * FROM " + entity.getName();
-		List<Record> records = new ArrayList<>();
+    @Override
+    public List<Record> readRecords() throws SQLException {
+        System.out.println("Fetching DB data...");
+        TabbedView.activePanel.clearTable();
+        Entity entity = TabbedView.activePanel.getEntity();
+        System.out.println("ENTITY: " + entity.getName());
+        String query = "SELECT * FROM " + entity.getName();
+        List<Record> records = new ArrayList<>();
 
-		System.out.println("\n==========");
-		System.out.println(query);
-		System.out.println("==========\n");
+        System.out.println("\n==========");
+        System.out.println(query);
+        System.out.println("==========\n");
 
-		PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
-		ResultSet resultSet = statement.executeQuery();
+        PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(query);
+        ResultSet resultSet = statement.executeQuery();
 
-		if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
-			System.err.println("Database and MS out of sync.");
-			return null;
-		}
+        if (resultSet.getMetaData().getColumnCount() != entity.getChildCount()) {
+            System.err.println("Database and MS out of sync.");
+            return null;
+        }
 
-		while (resultSet.next()) {
-			Record record = new Record();
+        while (resultSet.next()) {
+            Record record = new Record();
 
-			for (Node node : entity.getChildren()) {
-				if (node instanceof Attribute) {
-					Object value = resultSet.getObject(node.getName());
+            for (Node node : entity.getChildren()) {
+                if (node instanceof Attribute) {
+                    Object value = resultSet.getObject(node.getName());
 
-					if (value instanceof ClobImpl) {
-						record.addObject(clobToString((Clob) value));
-					} else {
-						record.addObject(value);
-					}
-				}
-			}
+                    if (value instanceof ClobImpl) {
+                        record.addObject(clobToString((Clob) value));
+                    } else {
+                        record.addObject(value);
+                    }
+                }
+            }
 
-			TabbedView.activePanel.getTableModel().addRow(record.getData().toArray());
-			records.add(record);
-		}
+            TabbedView.activePanel.getTableModel().addRow(record.getData().toArray());
+            records.add(record);
+        }
 
 //		System.out.println("RECORDS: " + records);
-		resultSet.close();
-		statement.close();
-		return records;
-	}
+        resultSet.close();
+        statement.close();
+        return records;
+    }
 
-	@Override
-	public void updateRecord(Object newRecord, Object oldRecord) {
-		Record updatedRecord = (Record) newRecord;
-		Record recordToUpdate = (Record) oldRecord;
+    @Override
+    public void updateRecord(Object newRecord, Object oldRecord) {
+        Record updatedRecord = (Record) newRecord;
+        Record recordToUpdate = (Record) oldRecord;
 
-		Entity newRecordEntity = updatedRecord.getEntity();
-		Entity oldRecordEntity = recordToUpdate.getEntity();
+        Entity newRecordEntity = updatedRecord.getEntity();
+        Entity oldRecordEntity = recordToUpdate.getEntity();
 
-		List<Node> newRecordAttributes = newRecordEntity.getChildren();
-		List<String> newRecordTextFields = updatedRecord.getTextFields();
+        List<Node> newRecordAttributes = newRecordEntity.getChildren();
+        List<String> newRecordTextFields = updatedRecord.getTextFields();
 
-		List<Node> oldRecordAttributes = oldRecordEntity.getChildren();
-		List<String> oldRecordTextFields = recordToUpdate.getTextFields();
+        List<Node> oldRecordAttributes = oldRecordEntity.getChildren();
+        List<String> oldRecordTextFields = recordToUpdate.getTextFields();
 
 
-		int i = 0;
+        int i = 0;
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE ").append(newRecordEntity.getName()).append(" SET ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ").append(newRecordEntity.getName()).append(" SET ");
 
-		for (Node node : newRecordAttributes) {
-			sb.append(node.getName().toUpperCase()).append(" = '").append(newRecordTextFields.get(i)).append("', ");
-			i++;
-		}
-		sb.delete(sb.length() - 2, sb.length());
-		sb.append(" WHERE ");
-		int j = 0;
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(newRecordTextFields.get(i)).append("', ");
+            i++;
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(" WHERE ");
+        int j = 0;
 
-		for (Node node : oldRecordAttributes) {
-			sb.append(node.getName().toUpperCase()).append(" = '").append(oldRecordTextFields.get(j)).append("' AND ");
-			j++;
-		}
-		sb.delete(sb.length() - 4, sb.length());
+        for (Node node : oldRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(oldRecordTextFields.get(j)).append("' AND ");
+            j++;
+        }
+        sb.delete(sb.length() - 4, sb.length());
 
-		System.out.println("Query: "+ sb);
+        System.out.println("Query: " + sb);
 
-		try {
-			PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
-			statement.executeUpdate();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		try {
+        try {
+            PreparedStatement statement = SQLConfig.getInstance().getDbConnection().prepareStatement(sb.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
 
-			readRecords();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+            readRecords();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
     public void deleteRecord(Object object) {
         Record recordToDelete = (Record) object;
-
         Entity recordToDeleteEntity = recordToDelete.getEntity();
         List<Node> recordToDeleteAttributes = recordToDeleteEntity.getChildren();
         List<String> recordToDeleteTextFields = recordToDelete.getTextFields();
@@ -198,7 +197,7 @@ public class DatabaseImplementation implements RepositoryImplementor {
         int i = 0;
 
         for (Node node : recordToDeleteAttributes) {
-            sb.append(node.getName().toUpperCase()).append(" LIKE '").append(recordToDeleteTextFields.get(i).equals("null" ) ? "":recordToDeleteTextFields.get(i)+"%").append("' AND ");
+            sb.append(node.getName().toUpperCase()).append(" LIKE '").append(recordToDeleteTextFields.get(i).equals("null") ? "" : recordToDeleteTextFields.get(i) + "%").append("' AND ");
             i++;
         }
         sb.delete(sb.length() - 5, sb.length());
@@ -212,32 +211,32 @@ public class DatabaseImplementation implements RepositoryImplementor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-		try {
-			readRecords();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        try {
+            readRecords();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
-	private String clobToString(Clob data) {
-		StringBuilder sb = new StringBuilder();
+    private String clobToString(Clob data) {
+        StringBuilder sb = new StringBuilder();
 
-		try {
-			Reader reader = data.getCharacterStream();
-			BufferedReader br = new BufferedReader(reader);
+        try {
+            Reader reader = data.getCharacterStream();
+            BufferedReader br = new BufferedReader(reader);
 
-			String line;
+            String line;
 
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
 
-			br.close();
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
+            br.close();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }
