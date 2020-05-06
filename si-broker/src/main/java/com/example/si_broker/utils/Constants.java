@@ -20,6 +20,7 @@ public class Constants {
 
     public static final String USERS_BASE_URL = "/api/v1/users";
     public static final String SERVICES_BASE_URL = "/api/v1/services";
+    public static final String AUTH_BASE_URL = "/api/v1/auth";
 
     /**
      * JWT

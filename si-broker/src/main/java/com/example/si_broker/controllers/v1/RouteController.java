@@ -123,7 +123,7 @@ public class RouteController {
                 RestTemplate restTemplate = new RestTemplate();
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
-                headers.setAccessControlAllowOrigin("this is dum dum");
+                headers.setAccessControlAllowOrigin("this is origin");
                 HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
                 // TODO: Error is here!

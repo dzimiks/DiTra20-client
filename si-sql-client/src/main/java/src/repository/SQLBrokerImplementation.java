@@ -407,7 +407,7 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
         HttpURLConnection connection = null;
 
         try {
-            URL url = new URL(Constants.BROKER_URL + "/login");
+            URL url = new URL(Constants.BROKER_URL + "/api/v1/login");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
