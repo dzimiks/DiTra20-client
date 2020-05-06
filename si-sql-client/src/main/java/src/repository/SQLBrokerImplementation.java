@@ -99,7 +99,53 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
 
     @Override
     public void updateRecord(Object newRecord, Object oldRecord) {
+        Record updatedRecord = (Record) newRecord;
+        Record recordToUpdate = (Record) oldRecord;
 
+        Entity newRecordEntity = updatedRecord.getEntity();
+        Entity oldRecordEntity = recordToUpdate.getEntity();
+
+        List<Node> newRecordAttributes = newRecordEntity.getChildren();
+        List<String> newRecordTextFields = updatedRecord.getTextFields();
+
+        List<Node> oldRecordAttributes = oldRecordEntity.getChildren();
+        List<String> oldRecordTextFields = recordToUpdate.getTextFields();
+
+        Map<String, String> value = new HashMap<>();
+        Map<String, String> condition = new HashMap<>();
+        int i = 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ").append(newRecordEntity.getName()).append(" SET ");
+
+        for (Node node : newRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(newRecordTextFields.get(i)).append("', ");
+            value.put(node.getName().toUpperCase(), newRecordTextFields.get(i));
+            i++;
+        }
+
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(" WHERE ");
+        int j = 0;
+
+        for (Node node : oldRecordAttributes) {
+            sb.append(node.getName().toUpperCase()).append(" = '").append(oldRecordTextFields.get(j)).append("' AND ");
+            condition.put(node.getName().toUpperCase(), oldRecordTextFields.get(j));
+            j++;
+        }
+
+        sb.delete(sb.length() - 4, sb.length());
+        System.out.println("Query: " + sb);
+
+        System.out.println("VALUE MAP: " + value);
+        System.out.println("CONDITION MAP: " + condition);
+        sendSQLUpdateRequest(newRecordEntity.getName(), value, condition);
+
+        try {
+            readRecords();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -252,7 +298,7 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
         System.out.println("TOKEN: " + token);
 
         if (token == null) {
-            System.err.println("[sendSQLDeleteRequest]: Token is null!!!");
+            System.err.println("[sendSQLInsertRequest]: Token is null!!!");
             return null;
         }
 
@@ -270,6 +316,62 @@ public class SQLBrokerImplementation implements RepositoryImplementor {
             JsonObject json = new JsonObject();
             json.addProperty("tableName", tableName);
             json.add("value", jsonElement);
+
+            String jsonInput = json.toString();
+            System.out.println("JSON input: " + jsonInput);
+
+            OutputStream os = connection.getOutputStream();
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+
+            System.out.println("Broker response " + response.toString());
+            return response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    private String sendSQLUpdateRequest(String tableName, Map<String, String> value, Map<String, String> condition) {
+        HttpURLConnection connection = null;
+
+        String token = sendLoginRequest();
+        System.out.println("TOKEN: " + token);
+
+        if (token == null) {
+            System.err.println("[sendSQLUpdateRequest]: Token is null!!!");
+            return null;
+        }
+
+        try {
+            URL url = new URL(Constants.BROKER_URL + "/services/sql-service/update");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setRequestProperty("Authorization", "Bearer " + token);
+            connection.setDoOutput(true);
+
+            // TODO
+            Gson gson = new Gson();
+            JsonElement jsonElement = gson.toJsonTree(value);
+            JsonElement conditionJsonElement = gson.toJsonTree(condition);
+            JsonObject json = new JsonObject();
+            json.addProperty("tableName", tableName);
+            json.add("value", jsonElement);
+            json.add("condition", conditionJsonElement);
 
             String jsonInput = json.toString();
             System.out.println("JSON input: " + jsonInput);

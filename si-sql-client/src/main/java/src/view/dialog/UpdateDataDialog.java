@@ -9,10 +9,7 @@ import src.models.datatypes.CharType;
 import src.models.datatypes.DateType;
 import src.models.datatypes.VarCharType;
 import src.models.tree.Node;
-import src.repository.DatabaseImplementation;
-import src.repository.RepositoryAbstraction;
-import src.repository.RepositoryImplementation;
-import src.repository.RepositoryImplementor;
+import src.repository.*;
 import src.view.MainView;
 import src.view.table.TabbedView;
 
@@ -104,6 +101,7 @@ public class UpdateDataDialog extends JDialog implements Serializable {
         btnOk.addActionListener(actionEvent -> {
             Record newRecord = prepareObjectForUpdate();
             RepositoryImplementor repositoryImplementor = new DatabaseImplementation();
+//            RepositoryImplementor repositoryImplementor = new SQLBrokerImplementation();
             RepositoryImplementation repositoryImplementation = new RepositoryImplementation(repositoryImplementor);
             repositoryImplementation.updateRecord(newRecord,oldRecord);
             this.setVisible(false);

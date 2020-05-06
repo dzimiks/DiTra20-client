@@ -9,10 +9,7 @@ import src.models.datatypes.CharType;
 import src.models.datatypes.DateType;
 import src.models.datatypes.VarCharType;
 import src.models.tree.Node;
-import src.repository.DatabaseImplementation;
-import src.repository.RepositoryAbstraction;
-import src.repository.RepositoryImplementation;
-import src.repository.RepositoryImplementor;
+import src.repository.*;
 import src.view.MainView;
 
 import javax.swing.*;
@@ -79,6 +76,7 @@ public class AddDataDialog extends JDialog implements Serializable {
 		btnOk.addActionListener(actionEvent -> {
 			Record newRecord = createNewRecord();
 			RepositoryImplementor repositoryImplementor = new DatabaseImplementation();
+//			RepositoryImplementor repositoryImplementor = new SQLBrokerImplementation();
 			RepositoryImplementation repositoryImplementation = new RepositoryImplementation(repositoryImplementor);
 			repositoryImplementation.createRecord(newRecord);
 			this.setVisible(false);
