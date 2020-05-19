@@ -1,4 +1,8 @@
 require('dotenv').config();
+const axios = require('axios');
+
+// Default axios baseURL
+axios.defaults.baseURL = 'http://localhost:3001/api/v1';
 
 // Query: SELECT table_name FROM information_schema.tables WHERE table_schema = 'tim_403_2_si2019'
 module.exports.allTablesSelect = (req, res) => {
@@ -11,7 +15,12 @@ module.exports.allTablesSelect = (req, res) => {
       throw error;
     }
 
-    res.send(JSON.stringify({ response: results }));
+    // TODO: [MongoDB]: Create collection with table name
+    results.forEach(name => {
+      axios.post(`/posts/${name.TABLE_NAME}`, null);
+    });
+
+    res.send(JSON.stringify({ data: results }));
   });
 };
 
@@ -31,7 +40,9 @@ module.exports.tablesSelect = (req, res) => {
       throw error;
     }
 
-    res.send(JSON.stringify({ response: results }));
+    // TODO: [MongoDB]: Insert document(s) in collection
+    axios.post(`/posts/insert/${tableName}`, { data: results });
+    res.send(JSON.stringify({ data: results }));
   });
 };
 
@@ -61,7 +72,8 @@ module.exports.tablesDelete = (req, res) => {
       throw error;
     }
 
-    res.send(JSON.stringify({ response: results }));
+    axios.delete(`/posts/${tableName}`, { data: value });
+    res.send(JSON.stringify({ data: results }));
   });
 };
 
@@ -98,7 +110,8 @@ module.exports.tablesInsert = (req, res) => {
       throw error;
     }
 
-    res.send(JSON.stringify({ response: results }));
+    axios.post(`/posts/insert/${tableName}`, { data: value });
+    res.send(JSON.stringify({ data: results }));
   });
 };
 
@@ -139,6 +152,7 @@ module.exports.tablesUpdate = (req, res) => {
       throw error;
     }
 
-    res.send(JSON.stringify({ response: results }));
+    axios.patch(`/posts/${tableName}`, { data: { value, condition } });
+    res.send(JSON.stringify({ data: results }));
   });
 };
