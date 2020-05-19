@@ -1,3 +1,20 @@
+require('dotenv').config();
+
+// Query: SELECT table_name FROM information_schema.tables WHERE table_schema = 'tim_403_2_si2019'
+module.exports.allTablesSelect = (req, res) => {
+  const query = `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.SQL_DB_NAME}'`;
+
+  res.locals.connection.query(query, (error, results) => {
+    console.log(`Running query: ${query}`);
+
+    if (error) {
+      throw error;
+    }
+
+    res.send(JSON.stringify({ response: results }));
+  });
+};
+
 // {
 //     "tableName": "TYPES_OF_INSTITUTIONS"
 // }

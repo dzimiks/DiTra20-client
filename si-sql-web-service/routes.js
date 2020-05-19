@@ -4,35 +4,16 @@ const router = express.Router();
 const mainController = require('./controllers');
 
 // GET
-router.get('/api/v1/tables/select', mainController.tablesSelect);
-router.get('/api/v1/tables/delete', mainController.tablesDelete);
-router.get('/api/v1/tables/insert', mainController.tablesInsert);
-router.get('/api/v1/tables/update', mainController.tablesUpdate);
+router.get('/api/v1/allTables', mainController.allTablesSelect);
+router.get('/api/v1/tables', mainController.tablesSelect);
 
 // POST
-router.post('/api/v1/tables/select', (req, res) => {
-  res.json({ tableName: req.body.tableName });
-});
+router.post('/api/v1/tables', mainController.tablesInsert);
 
-router.post('/api/v1/tables/delete', (req, res) => {
-  res.json({
-    tableName: req.body.tableName,
-    value: res.body
-  });
-});
+// PATCH
+router.patch('/api/v1/tables', mainController.tablesUpdate);
 
-router.post('/api/v1/tables/insert', (req, res) => {
-  res.json({
-    tableName: req.body.tableName,
-    value: res.body
-  });
-});
-
-router.post('/api/v1/tables/update', (req, res) => {
-  res.json({
-    tableName: req.body.tableName,
-    value: res.body
-  });
-});
+// DELETE
+router.delete('/api/v1/tables', mainController.tablesDelete);
 
 module.exports = router;
