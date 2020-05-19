@@ -1,11 +1,12 @@
 {
-  "name": "si-web-service",
+  "name": "si-mongo-web-service",
   "version": "1.0.0",
-  "description": "SI SQL Web Service",
+  "description": "SI MongoDB Web Service",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [],
   "author": "dzimiks",
   "license": "ISC",
   "dependencies": {
@@ -13,7 +14,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
-    "morgan": "^1.10.0",
-    "mysql": "^2.18.1"
+    "mongoose": "^5.9.15",
+    "morgan": "^1.10.0"
   }
 }
