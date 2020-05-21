@@ -40,7 +40,7 @@ public class MyUserDetails implements UserDetails {
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
-        System.out.println("OVde cusidashad");
+        System.out.println("MyUserDetails build()");
 
         return new MyUserDetails(
                 user.getId(),

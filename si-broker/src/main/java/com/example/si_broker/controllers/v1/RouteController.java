@@ -141,13 +141,13 @@ public class RouteController {
             }
         }
 
-        if(!complexService.isEmpty()){
+        if (!complexService.isEmpty()) {
             ComplexService cs = complexService.get();
             String parameters = request.getQueryString();
 
             Context context = new Context();
 
-            for(ServiceDomain sd:cs.getServiceDomainList()){
+            for (ServiceDomain sd : cs.getServiceDomainList()) {
                 context.setServiceDomain(sd);
                 context.setComplexServiceParameters(parameters);
                 ServiceRunnerState serviceRunnerState = new ServiceRunnerState();

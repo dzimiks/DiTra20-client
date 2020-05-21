@@ -1,7 +1,9 @@
 package com.example.si_broker.controllers.v1;
 
 import com.example.si_broker.domain.MyUserDetails;
+import com.example.si_broker.domain.User;
 import com.example.si_broker.payload.requests.LoginRequest;
+import com.example.si_broker.payload.requests.SignupRequest;
 import com.example.si_broker.payload.responses.JWTResponse;
 import com.example.si_broker.repositories.RoleRepository;
 import com.example.si_broker.repositories.UserRepository;
@@ -35,27 +37,60 @@ public class AuthController {
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
+            )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(((MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities());
+
+        System.out.println("MyUserDetails: " + ((MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities());
+
         String jwt = jwtUtils.generateJWTToken(authentication);
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
         List<String> roles = userDetails
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+            .getAuthorities()
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
 
         return ResponseEntity.ok(new JWTResponse(
                 jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles)
+                roles
+            )
         );
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/register")
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+        System.out.println(signUpRequest);
+
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity
+                .badRequest()
+                .body("Error: Username is already taken!");
+        }
+
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                .badRequest()
+                .body("Error: Email is already in use!");
+        }
+
+        User user = new User(
+            signUpRequest.getUsername(),
+            signUpRequest.getEmail(),
+            passwordEncoder.encode(signUpRequest.getPassword())
+        );
+
+        System.out.println("User: " + user);
+        System.out.println(signUpRequest);
+
+        user.setRoles(signUpRequest.getRoles());
+        userRepository.save(user);
+        return ResponseEntity.ok("User registered successfully!");
     }
 }

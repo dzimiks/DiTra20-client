@@ -28,6 +28,7 @@ public class Constants {
     public static final String SECRET_KEY = "SISecretKeyForJWT";
     public static final String HEADER_STRING = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
-//    public static final long EXPIRATION_TIME = 86400;
-    public static final long EXPIRATION_TIME = 600000;
+//    public static final long EXPIRATION_TIME = 86400; // 1.44 minutes
+//    public static final long EXPIRATION_TIME = 600000; // 10 minutes
+    public static final long EXPIRATION_TIME = 3600000; // 60 minutes
 }

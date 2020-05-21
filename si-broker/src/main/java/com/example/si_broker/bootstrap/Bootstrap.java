@@ -34,7 +34,8 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        init();
+        System.out.println("Bootstrap init!");
+//        init();
     }
 
     private void init() {
