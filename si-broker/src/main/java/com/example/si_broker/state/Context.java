@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 @RequestScope
 public class Context {

@@ -107,12 +107,14 @@ public class RouteController {
                 for (Role r : roles) {
                     if (r.getName().equals(RoleType.valueOf(authority.getAuthority()))) {
                         accessGranted = true;
+                        System.out.println("Access to service: "+serviceName +"granted for User: "+ userDetails);
                         break;
                     }
                 }
             }
 
             if (!accessGranted) {
+                System.out.println("Access to service: "+ serviceName + "NOT GRANTED for User: "+ userDetails);
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);
             }
 
