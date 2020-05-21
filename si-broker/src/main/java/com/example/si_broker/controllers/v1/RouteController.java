@@ -85,11 +85,14 @@ public class RouteController {
         // TODO: Add complex service
 
         if (serviceDomain.isEmpty()) {
+            // TODO: 21.5.20. Logger
+            System.out.println("User: " + userDetails + " tried to access non-existing " + serviceName + " service at " + dateFormat.format(date));
+
             return ResponseEntity.badRequest().body("Error: Service " + serviceName + " doesn't exists!");
         }
 
         // TODO: 21.5.20. Logger
-        System.out.println("User: "+ userDetails+" tried to access "+serviceName +" service at "+dateFormat.format(date));
+        System.out.println("User: " + userDetails + " tried to access " + serviceName + " service at " + dateFormat.format(date));
 
         if (!serviceDomain.isEmpty()) {
             ServiceDomain service = serviceDomain.get();
@@ -118,7 +121,7 @@ public class RouteController {
                     if (r.getName().equals(RoleType.valueOf(authority.getAuthority()))) {
                         accessGranted = true;
                         // TODO: 21.5.20. Logger
-                        System.out.println("Access to service: "+serviceName +" GRANTED for User: "+ userDetails);
+                        System.out.println("Access to service: " + serviceName + " GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                         break;
                     }
                 }
@@ -126,7 +129,7 @@ public class RouteController {
 
             if (!accessGranted) {
                 // TODO: 21.5.20. Logger
-                System.out.println("Access to service: "+ serviceName + "NOT GRANTED for User: "+ userDetails);
+                System.out.println("Access to service: " + serviceName + "NOT GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);
             }
 
