@@ -76,8 +76,6 @@ public class RouteController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        // TODO: 21.5.20. Logger
-        System.out.println("User: "+ userDetails+" tried to access "+serviceName +" service at "+dateFormat.format(date));
 
 //        System.out.println("Service name: " + serviceName);
 //        System.out.println("Route: " + route);
@@ -89,6 +87,9 @@ public class RouteController {
         if (serviceDomain.isEmpty()) {
             return ResponseEntity.badRequest().body("Error: Service " + serviceName + " doesn't exists!");
         }
+
+        // TODO: 21.5.20. Logger
+        System.out.println("User: "+ userDetails+" tried to access "+serviceName +" service at "+dateFormat.format(date));
 
         if (!serviceDomain.isEmpty()) {
             ServiceDomain service = serviceDomain.get();
