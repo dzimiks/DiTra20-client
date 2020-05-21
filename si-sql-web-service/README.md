@@ -1,4 +1,4 @@
-# ArangoDB web service
+# SQL web service
 
 Software Engineering - Digital Transformation 2020.
 

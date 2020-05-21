@@ -5,7 +5,6 @@ import com.example.si_broker.api.v1.mappers.ServiceMapper;
 import com.example.si_broker.api.v1.models.ComplexServiceDTO;
 import com.example.si_broker.api.v1.models.ServiceDTO;
 import com.example.si_broker.domain.ComplexService;
-import com.example.si_broker.domain.ServiceDomain;
 import com.example.si_broker.repositories.ComplexServiceRepository;
 import com.example.si_broker.services.ComplexServiceAPIService;
 import org.springframework.beans.factory.annotation.Autowired;

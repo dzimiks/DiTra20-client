@@ -93,8 +93,15 @@ module.exports.insertPost = async (req, res) => {
 //
 // Body:
 // {
-// 	"title": "Updated post",
-// 	"content": "Updated post content."
+//     "data": {
+//         "value": {
+//             "TIP_UST": "XL",
+//             "TIP_NAZIV": "Naziv"
+//         },
+//         "condition": {
+//             "TIP_UST": "MO"
+//         }
+//     }
 // }
 module.exports.updatePost = async (req, res) => {
   const { collectionName } = req.params;
@@ -111,7 +118,7 @@ module.exports.updatePost = async (req, res) => {
   }
 };
 
-// DELETE: http://localhost:3001/api/v1/posts
+// DELETE: http://localhost:3001/api/v1/posts/<collectionName>
 module.exports.deletePost = async (req, res) => {
   const { collectionName } = req.params;
   const value = req.body;

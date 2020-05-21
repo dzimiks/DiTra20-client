@@ -50,11 +50,11 @@ public class RouteController {
         System.out.println("SecurityContextHolder: " + securityContextHolder);
 
         MyUserDetails userDetails = new MyUserDetails(
-                "id-1",
-                principal.getName(),
-                "email",
-                (String) principal.getCredentials(),
-                principal.getAuthorities()
+            "id-1",
+            principal.getName(),
+            "email",
+            principal.getCredentials().toString(),
+            principal.getAuthorities()
         );
 
         System.out.println("User details: " + userDetails);
@@ -158,6 +158,5 @@ public class RouteController {
 
 
         return ResponseEntity.ok().build();
-
     }
 }
