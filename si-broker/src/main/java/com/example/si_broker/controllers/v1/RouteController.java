@@ -20,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +60,7 @@ public class RouteController {
             principal.getAuthorities()
         );
 
-        System.out.println("User details: " + userDetails);
+//        System.out.println("User details: " + userDetails);
 
         String uri = request.getRequestURI();
         System.out.println("URI: " + uri);
@@ -70,20 +73,30 @@ public class RouteController {
         String routePart = uri.substring(PREFIX_LENGTH + serviceName.length() + 1);
         String route = routePart.equals("") ? "/" : routePart;
 
-        System.out.println("Service name: " + serviceName);
-        System.out.println("Route: " + route);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+
+
+//        System.out.println("Service name: " + serviceName);
+//        System.out.println("Route: " + route);
 
         Optional<ServiceDomain> serviceDomain = serviceRepository.findByName(serviceName);
         Optional<ComplexService> complexService = complexServiceRepository.findByName(serviceName);
         // TODO: Add complex service
 
         if (serviceDomain.isEmpty()) {
+            // TODO: 21.5.20. Logger
+            System.out.println("User: " + userDetails + " tried to access non-existing " + serviceName + " service at " + dateFormat.format(date));
+
             return ResponseEntity.badRequest().body("Error: Service " + serviceName + " doesn't exists!");
         }
 
+        // TODO: 21.5.20. Logger
+        System.out.println("User: " + userDetails + " tried to access " + serviceName + " service at " + dateFormat.format(date));
+
         if (!serviceDomain.isEmpty()) {
             ServiceDomain service = serviceDomain.get();
-            System.out.println("SERVICE: " + service);
+//            System.out.println("SERVICE: " + service);
 
             Map<String, Map<String, Object>> serviceEndpointAndRoles = service.getEndpointAndRoles();
 
@@ -91,11 +104,11 @@ public class RouteController {
                 ResponseEntity.badRequest().body("Error: Endpoint " + route + " doesn't exists!");
             }
 
-            System.out.println("DETAILS: " + userDetails);
+//            System.out.println("DETAILS: " + userDetails);
             boolean accessGranted = false;
 
             for (GrantedAuthority authority : userDetails.getAuthorities()) {
-                System.out.println("AUTHORITY: " + authority.getAuthority());
+//                System.out.println("AUTHORITY: " + authority.getAuthority());
 //                Optional<Role> role = roleRepository.findByName(RoleType.valueOf(authority.getAuthority()));
 //
 //                if (role.isEmpty()) {
@@ -107,12 +120,16 @@ public class RouteController {
                 for (Role r : roles) {
                     if (r.getName().equals(RoleType.valueOf(authority.getAuthority()))) {
                         accessGranted = true;
+                        // TODO: 21.5.20. Logger
+                        System.out.println("Access to service: " + serviceName + " GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                         break;
                     }
                 }
             }
 
             if (!accessGranted) {
+                // TODO: 21.5.20. Logger
+                System.out.println("Access to service: " + serviceName + "NOT GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);
             }
 
