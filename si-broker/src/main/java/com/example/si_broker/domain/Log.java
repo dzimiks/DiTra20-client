@@ -17,6 +17,6 @@ public class Log {
     private String username;
     private String date;
     private String description;
-    private Boolean succesful;
+    private Boolean successful;
 
 }
