@@ -1,11 +1,9 @@
 package com.example.si_broker.controllers.v1;
 
 import com.example.si_broker.domain.*;
-import com.example.si_broker.repositories.ComplexServiceRepository;
-import com.example.si_broker.repositories.RoleRepository;
+import com.example.si_broker.repositories.*;
 
-import com.example.si_broker.repositories.ServiceRepository;
-import com.example.si_broker.repositories.UserRepository;
+import com.example.si_broker.services.LogService;
 import com.example.si_broker.state.Context;
 import com.example.si_broker.state.ServiceRunnerState;
 import com.example.si_broker.utils.Constants;
@@ -22,10 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -34,6 +29,9 @@ public class RouteController {
 
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    LogService logService;
 
     @Autowired
     ComplexServiceRepository complexServiceRepository;
@@ -85,14 +83,17 @@ public class RouteController {
         // TODO: Add complex service
 
         if (serviceDomain.isEmpty()) {
+
+            logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),false));
             // TODO: 21.5.20. Logger
             System.out.println("User: " + userDetails + " tried to access non-existing " + serviceName + " service at " + dateFormat.format(date));
 
             return ResponseEntity.badRequest().body("Error: Service " + serviceName + " doesn't exists!");
         }
 
-        // TODO: 21.5.20. Logger
-        System.out.println("User: " + userDetails + " tried to access " + serviceName + " service at " + dateFormat.format(date));
+//        logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),true));
+//        // TODO: 21.5.20. Logger
+//        System.out.println("User: " + userDetails + " tried to access " + serviceName + " service at " + dateFormat.format(date));
 
         if (!serviceDomain.isEmpty()) {
             ServiceDomain service = serviceDomain.get();
@@ -120,6 +121,7 @@ public class RouteController {
                 for (Role r : roles) {
                     if (r.getName().equals(RoleType.valueOf(authority.getAuthority()))) {
                         accessGranted = true;
+                        logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),true));
                         // TODO: 21.5.20. Logger
                         System.out.println("Access to service: " + serviceName + " GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                         break;
@@ -128,6 +130,7 @@ public class RouteController {
             }
 
             if (!accessGranted) {
+                logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),false));
                 // TODO: 21.5.20. Logger
                 System.out.println("Access to service: " + serviceName + "NOT GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);
