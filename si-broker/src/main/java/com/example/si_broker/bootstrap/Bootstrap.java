@@ -2,6 +2,7 @@ package com.example.si_broker.bootstrap;
 
 import com.example.si_broker.domain.*;
 import com.example.si_broker.repositories.ComplexServiceRepository;
+import com.example.si_broker.repositories.LogRepository;
 import com.example.si_broker.repositories.ServiceRepository;
 import com.example.si_broker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -17,6 +20,7 @@ public class Bootstrap implements CommandLineRunner {
     private UserRepository userRepository;
     private ServiceRepository serviceRepository;
     private ComplexServiceRepository complexServiceRepository;
+    private LogRepository logRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
@@ -24,11 +28,13 @@ public class Bootstrap implements CommandLineRunner {
             UserRepository userRepository,
             ServiceRepository serviceRepository,
             ComplexServiceRepository complexServiceRepository,
+            LogRepository logRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.complexServiceRepository = complexServiceRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.logRepository = logRepository;
 
     }
 
@@ -43,6 +49,7 @@ public class Bootstrap implements CommandLineRunner {
         serviceRepository.deleteAll();
         userRepository.deleteAll();
         complexServiceRepository.deleteAll();
+        logRepository.deleteAll();
 
         System.out.println("Users are deleted!");
         System.out.println("Services are deleted!");
@@ -150,10 +157,18 @@ public class Bootstrap implements CommandLineRunner {
         complexService1.setRoles(roles2);
         complexService1.setServiceDomainList(serviceDomainList);
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
 
+        Log log = new Log(UUID.randomUUID().toString(),"serviceName","milan",dateFormat.format(date),true);
+
+
+
+        logRepository.save(log);
         serviceRepository.save(serviceDomain1);
         serviceRepository.save(serviceDomain2);
         complexServiceRepository.save(complexService1);
+
 
         System.out.println("Services loaded: " + serviceRepository.count());
     }

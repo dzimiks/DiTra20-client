@@ -8,7 +8,7 @@ import javax.persistence.Id;
 
 @AllArgsConstructor
 @Data
-@Document(collection = "log")
+@Document(collection = "loggs")
 public class Log {
 
     @Id
