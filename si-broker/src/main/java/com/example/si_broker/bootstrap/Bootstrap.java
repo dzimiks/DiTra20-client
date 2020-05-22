@@ -160,7 +160,7 @@ public class Bootstrap implements CommandLineRunner {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        Log log = new Log(UUID.randomUUID().toString(),"serviceName","milan",dateFormat.format(date),true);
+        Log log = new Log(UUID.randomUUID().toString(),"serviceName","milan",dateFormat.format(date),"User logged in",true);
 
 
 

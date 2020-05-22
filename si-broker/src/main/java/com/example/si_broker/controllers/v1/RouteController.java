@@ -84,7 +84,7 @@ public class RouteController {
 
         if (serviceDomain.isEmpty()) {
 
-            logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),false));
+            logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),"User tried to access non-existing service",false));
             // TODO: 21.5.20. Logger
             System.out.println("User: " + userDetails + " tried to access non-existing " + serviceName + " service at " + dateFormat.format(date));
 
@@ -121,7 +121,7 @@ public class RouteController {
                 for (Role r : roles) {
                     if (r.getName().equals(RoleType.valueOf(authority.getAuthority()))) {
                         accessGranted = true;
-                        logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),true));
+                        logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),"User accessed service",true));
                         // TODO: 21.5.20. Logger
                         System.out.println("Access to service: " + serviceName + " GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                         break;
@@ -130,7 +130,7 @@ public class RouteController {
             }
 
             if (!accessGranted) {
-                logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),false));
+                logService.addLog(new Log(UUID.randomUUID().toString(),serviceName,userDetails.getUsername(),dateFormat.format(date),"User tried to access service without permission",false));
                 // TODO: 21.5.20. Logger
                 System.out.println("Access to service: " + serviceName + "NOT GRANTED for User: " + userDetails + " at " + dateFormat.format(date));
                 return ResponseEntity.badRequest().body("Error: You don't have permission for service " + serviceName);

@@ -16,6 +16,7 @@ public class Log {
     private String serviceName;
     private String username;
     private String date;
+    private String description;
     private Boolean succesful;
 
 }

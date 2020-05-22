@@ -1,10 +1,12 @@
 package com.example.si_broker.controllers.v1;
 
+import com.example.si_broker.domain.Log;
 import com.example.si_broker.domain.MyUserDetails;
 import com.example.si_broker.domain.User;
 import com.example.si_broker.payload.requests.LoginRequest;
 import com.example.si_broker.payload.requests.SignupRequest;
 import com.example.si_broker.payload.responses.JWTResponse;
+import com.example.si_broker.repositories.LogRepository;
 import com.example.si_broker.repositories.RoleRepository;
 import com.example.si_broker.repositories.UserRepository;
 import com.example.si_broker.security.JWTUtils;
@@ -19,7 +21,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -31,6 +37,7 @@ public class AuthController {
     AuthenticationManager authenticationManager;
     UserRepository userRepository;
     RoleRepository roleRepository;
+    LogRepository logRepository;
     PasswordEncoder passwordEncoder;
     JWTUtils jwtUtils;
 
@@ -89,8 +96,12 @@ public class AuthController {
         System.out.println("User: " + user);
         System.out.println(signUpRequest);
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+
         user.setRoles(signUpRequest.getRoles());
         userRepository.save(user);
+        logRepository.save(new Log(UUID.randomUUID().toString(),"register",user.getUsername(),dateFormat.format(date),"User registered",true));
         return ResponseEntity.ok("User registered successfully!");
     }
 }
