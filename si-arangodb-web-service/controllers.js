@@ -97,7 +97,18 @@ module.exports.updatePost = async (req, res) => {
   }
 };
 
-// DELETE: http://localhost:3002/api/v1/posts
+// DELETE: http://localhost:3002/api/v1/posts/<collectionName>
 module.exports.deletePost = async (req, res) => {
-  res.send({ text: 'deletePost' });
+  const { collectionName } = req.params;
+  const value = req.body;
+
+  try {
+    console.log(`[Query]: Delete post by value: ${JSON.stringify(value)} from collection ${collectionName}`);
+    const collection = arangoDatabase.collection(collectionName);
+    await collection.remove(value);
+    res.status(204).send();
+  } catch {
+    res.status(404);
+    res.send({ error: `Document with value ${JSON.stringify(value)} doesn't exist!` });
+  }
 };

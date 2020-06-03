@@ -132,3 +132,22 @@ module.exports.deletePost = async (req, res) => {
     res.send({ error: `Document with value ${JSON.stringify(value)} doesn't exist!` });
   }
 };
+
+// GET: http://localhost:3001/api/v1/posts/query/<collectionName>
+module.exports.complexQuery = async (req, res) => {
+  const { collectionName } = req.params;
+  const { values, sortCriteria, limitCriteria } = req.body.data;
+
+  try {
+    console.log(`[Query]: Complex query: ${JSON.stringify(values)} from collection ${collectionName}`);
+    const result = await mongoDatabase
+      .collection(collectionName)
+      .find(values)
+      .sort(sortCriteria)
+      .limit(limitCriteria);
+    res.send(result);
+  } catch {
+    res.status(404);
+    res.send({ error: `Document with values ${JSON.stringify(values)} doesn't exist!` });
+  }
+};

@@ -6,6 +6,7 @@ const mainController = require('./controllers');
 // GET
 router.get('/api/v1/posts', mainController.allPosts);
 router.get('/api/v1/posts/:collectionName', mainController.findPostByCollectionName);
+router.get('/api/v1/posts/query/:collectionName', mainController.complexQuery);
 
 // POST
 router.post("/api/v1/posts/:collectionName", mainController.createCollection);
