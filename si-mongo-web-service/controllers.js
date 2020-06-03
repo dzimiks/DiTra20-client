@@ -136,7 +136,7 @@ module.exports.deletePost = async (req, res) => {
 // GET: http://localhost:3001/api/v1/posts/query/<collectionName>
 module.exports.complexQuery = async (req, res) => {
   const { collectionName } = req.params;
-  const { values, query, sortCriteria, limitCriteria } = req.body.data;
+  const { value, query, sortCriteria, limitCriteria } = req.body.data;
 
   let finalQuery = {};
 
@@ -144,19 +144,35 @@ module.exports.complexQuery = async (req, res) => {
     switch (query['regexCriteria']) {
       case 'starts_with':
         // Start with string
-        finalQuery = { zip: { '$regex': '^string', '$options': 'i' } };
+        finalQuery = { zip: { '$regex': `^${query.condition}`, '$options': 'i' } };
         break;
       case 'ends_with':
         // Ends with string
-        finalQuery = { zip: { '$regex': 'string$', '$options': 'i' } };
+        finalQuery = { zip: { '$regex': `${query.condition}$`, '$options': 'i' } };
         break;
       case 'contains':
         // Contains string
-        finalQuery = { zip: { '$regex': 'string', '$options': 'i' } };
+        finalQuery = { zip: { '$regex': query.condition, '$options': 'i' } };
+        break;
+      // Aggregations
+      case 'gte':
+        finalQuery = { value: { $gte: query.condition } };
+        break;
+      case 'gt':
+        finalQuery = { value: { $gt: query.condition } };
+        break;
+      case 'lte':
+        finalQuery = { value: { $lte: query.condition } };
+        break;
+      case 'lt':
+        finalQuery = { value: { $lt: query.condition } };
+        break;
+      case 'eq':
+        finalQuery = { value: { $eq: query.condition } };
         break;
       default:
         // Start with string
-        finalQuery = { zip: { '$regex': '^string', '$options': 'i' } };
+        finalQuery = { zip: { '$regex': `^${query.condition}`, '$options': 'i' } };
         break;
     }
 
@@ -170,20 +186,20 @@ module.exports.complexQuery = async (req, res) => {
       res.send(result);
     } catch {
       res.status(404);
-      res.send({ error: `Document with values ${JSON.stringify(finalQuery)} doesn't exist!` });
+      res.send({ error: `Document with value ${JSON.stringify(finalQuery)} doesn't exist!` });
     }
   } else {
     try {
-      console.log(`[Query]: Complex query: ${JSON.stringify(values)} from collection ${collectionName}`);
+      console.log(`[Query]: Complex query: ${JSON.stringify(value)} from collection ${collectionName}`);
       const result = await mongoDatabase
         .collection(collectionName)
-        .find(values)
+        .find(value)
         .sort(sortCriteria)
         .limit(limitCriteria);
       res.send(result);
     } catch {
       res.status(404);
-      res.send({ error: `Document with values ${JSON.stringify(values)} doesn't exist!` });
+      res.send({ error: `Document with value ${JSON.stringify(value)} doesn't exist!` });
     }
   }
 };
