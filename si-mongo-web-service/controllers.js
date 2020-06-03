@@ -136,18 +136,54 @@ module.exports.deletePost = async (req, res) => {
 // GET: http://localhost:3001/api/v1/posts/query/<collectionName>
 module.exports.complexQuery = async (req, res) => {
   const { collectionName } = req.params;
-  const { values, sortCriteria, limitCriteria } = req.body.data;
+  const { values, query, sortCriteria, limitCriteria } = req.body.data;
 
-  try {
-    console.log(`[Query]: Complex query: ${JSON.stringify(values)} from collection ${collectionName}`);
-    const result = await mongoDatabase
-      .collection(collectionName)
-      .find(values)
-      .sort(sortCriteria)
-      .limit(limitCriteria);
-    res.send(result);
-  } catch {
-    res.status(404);
-    res.send({ error: `Document with values ${JSON.stringify(values)} doesn't exist!` });
+  let finalQuery = {};
+
+  if (query.hasOwnProperty('regexCriteria')) {
+    switch (query['regexCriteria']) {
+      case 'starts_with':
+        // Start with string
+        finalQuery = { zip: { '$regex': '^string', '$options': 'i' } };
+        break;
+      case 'ends_with':
+        // Ends with string
+        finalQuery = { zip: { '$regex': 'string$', '$options': 'i' } };
+        break;
+      case 'contains':
+        // Contains string
+        finalQuery = { zip: { '$regex': 'string', '$options': 'i' } };
+        break;
+      default:
+        // Start with string
+        finalQuery = { zip: { '$regex': '^string', '$options': 'i' } };
+        break;
+    }
+
+    try {
+      console.log(`[Query]: Complex query: ${JSON.stringify(finalQuery)} from collection ${collectionName}`);
+      const result = await mongoDatabase
+        .collection(collectionName)
+        .find(finalQuery)
+        .sort(sortCriteria)
+        .limit(limitCriteria);
+      res.send(result);
+    } catch {
+      res.status(404);
+      res.send({ error: `Document with values ${JSON.stringify(finalQuery)} doesn't exist!` });
+    }
+  } else {
+    try {
+      console.log(`[Query]: Complex query: ${JSON.stringify(values)} from collection ${collectionName}`);
+      const result = await mongoDatabase
+        .collection(collectionName)
+        .find(values)
+        .sort(sortCriteria)
+        .limit(limitCriteria);
+      res.send(result);
+    } catch {
+      res.status(404);
+      res.send({ error: `Document with values ${JSON.stringify(values)} doesn't exist!` });
+    }
   }
 };
